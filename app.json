@@ -10,6 +10,9 @@
     "ios": {
       "icon": "./assets/expo.icon"
     },
+    "web": {
+      "bundler": "metro"
+    },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -29,7 +32,8 @@
           "image": "./assets/images/Logo.png",
           "imageWidth": 150
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,
