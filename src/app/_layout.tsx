@@ -12,7 +12,6 @@ import {
 } from "@expo-google-fonts/dm-sans";
 import { StatusBar } from "expo-status-bar";
 
-// Prevent the splash screen from auto-hiding before fonts are loaded
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
