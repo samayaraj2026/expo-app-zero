@@ -8,6 +8,6 @@ export const colors = {
     blue: '#1C398E',
     green: '#5EA500',
     yellow: '#FEF3C6',
-    surface:'#F5F5F5',
-    border:'#D4D4D4'
+    border: '#D4D4D4',
+    surface: '#F5F5F5',
 }
