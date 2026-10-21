@@ -12,24 +12,11 @@ import {
   Animated,
   Pressable,
   Text,
-  TextInputProps,
-  StyleProp,
-  ViewStyle,
-  TextStyle,
 } from "react-native";
-
-export interface FloatingTextInputProps extends Omit<TextInputProps, "placeholder"> {
-  label: string;
-  required?: boolean;
-  error?: string;
-  containerStyle?: StyleProp<ViewStyle>;
-  inputStyle?: StyleProp<TextStyle>;
-  labelStyle?: StyleProp<TextStyle>;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
-}
+import type { FloatingTextInputProps } from "@/types";
 
 export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
+
   (
     {
       label,
@@ -37,6 +24,7 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
       value: controlledValue,
       defaultValue,
       error,
+      errorStyle,
       editable = true,
       onFocus,
       onBlur,
@@ -54,11 +42,9 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
     const inputRef = useRef<TextInput>(null);
     useImperativeHandle(ref, () => inputRef.current as TextInput);
 
-    // Track internal text state for uncontrolled or controlled usage
     const [text, setText] = useState<string>(controlledValue ?? defaultValue ?? "");
     const [isFocused, setIsFocused] = useState<boolean>(false);
 
-    // Synchronize when controlled value changes
     useEffect(() => {
       if (controlledValue !== undefined) {
         setText(controlledValue);
@@ -68,7 +54,6 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
     const hasValue = text.length > 0;
     const isFloating = isFocused || hasValue;
 
-    // Animation progress: 0 (resting) -> 1 (floated)
     const animatedValue = useRef(new Animated.Value(isFloating ? 1 : 0)).current;
 
     useEffect(() => {
@@ -96,7 +81,6 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
       onChangeText?.(newText);
     };
 
-    // Label position and typography interpolations
     const labelTop = animatedValue.interpolate({
       inputRange: [0, 1],
       outputRange: [editable ? 18 : 9, 9],
@@ -110,14 +94,13 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
     const labelColor = animatedValue.interpolate({
       inputRange: [0, 1],
       outputRange: [
-        editable ? colors.black : "rgba(0, 0, 0, 0.4)",
-        editable ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.4)",
+        editable ? colors.black : colors.black40,
+        editable ? colors.black70 : colors.black40,
       ],
     });
 
-    // Dynamic border color
     const getBorderColor = () => {
-      if (error) return "#ef4444";
+      if (error) return colors.red;
       if (!editable) return colors.border;
       if (isFocused) return colors.border;
       return "#e4e4e7";
@@ -147,7 +130,6 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
         >
           {leftIcon && <View className="mr-2 justify-center">{leftIcon}</View>}
 
-          {/* Floating Animated Label */}
           <Animated.Text
             numberOfLines={1}
             style={[
@@ -166,7 +148,7 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
             {required && (
               <Text
                 style={{
-                  color: editable ? (isFloating ? "rgba(0, 0, 0, 0.7)" : colors.black) : "rgba(0, 0, 0, 0.4)",
+                  color: editable ? (isFloating ? colors.black70 : colors.black) : colors.black40,
                   fontFamily: "DMSans_400Regular",
                 }}
               >
@@ -175,7 +157,6 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
             )}
           </Animated.Text>
 
-          {/* Actual Input */}
           <TextInput
             ref={inputRef}
             value={controlledValue !== undefined ? controlledValue : text}
@@ -195,7 +176,7 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
                 includeFontPadding: false,
                 fontSize: editable ? 16 : 14,
                 fontFamily: editable ? "DMSans_400Regular" : "DMSans_500Medium",
-                color: editable ? "#09090b" : "rgba(0, 0, 0, 0.4)",
+                color: editable ? "#09090b" : colors.black40,
                 height: "100%",
               },
               inputStyle,
@@ -211,9 +192,20 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
           )}
         </Pressable>
 
-        {/* Error message */}
         {error ? (
-          <Text className="text-red-500 font-dm-regular text-xs mt-1 ml-1">
+          <Text
+            style={[
+              {
+                color: colors.red,
+                fontFamily: "DMSans_400Regular",
+                fontSize: 12,
+                marginTop: 6,
+                marginLeft: 4,
+                lineHeight: 16,
+              },
+              errorStyle,
+            ]}
+          >
             {error}
           </Text>
         ) : null}

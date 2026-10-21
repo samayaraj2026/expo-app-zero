@@ -1,65 +1,32 @@
-/**
- * AppButton — Reusable button component
- *
- * Variants  : solid | outline | ghost | stepper | icon
- * Sizes     : sm | md | lg
- */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   TouchableOpacity,
   Text,
   View,
   ActivityIndicator,
-  type ImageSourcePropType,
 } from 'react-native';
 import { Image } from 'expo-image';
+import type {
+  ButtonVariant,
+  ButtonSize,
+  BaseProps,
+  SolidOutlineGhostProps,
+  IconButtonProps,
+  StepperProps,
+  AppButtonProps,
+} from '@/types';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+export type {
+  ButtonVariant,
+  ButtonSize,
+  BaseProps,
+  SolidOutlineGhostProps,
+  IconButtonProps,
+  StepperProps,
+  AppButtonProps,
+};
 
-export type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'stepper' | 'icon';
-export type ButtonSize    = 'sm' | 'md' | 'lg';
-
-interface BaseProps {
-  size?: ButtonSize;
-  disabled?: boolean;
-  loading?: boolean;
-}
-
-interface SolidOutlineGhostProps extends BaseProps {
-  variant?: 'solid' | 'outline' | 'ghost'|'secondary';
-  label: string;
-  onPress: () => void;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
-  /** Stretch to fill parent width */
-  fullWidth?: boolean;
-  /** Optional image shown in a rounded container on the left of the label */
-  image?: ImageSourcePropType;
-}
-
-interface IconButtonProps extends BaseProps {
-  variant: 'icon';
-  label: string;
-  onPress: () => void;
-  icon: React.ReactNode;
-}
-
-interface StepperProps extends BaseProps {
-  variant: 'stepper';
-  value?: number;
-  initialValue?: number;
-  min?: number;
-  max?: number;
-  onValueChange?: (value: number) => void;
-}
-
-export type AppButtonProps =
-  | SolidOutlineGhostProps
-  | IconButtonProps
-  | StepperProps;
-
-// ─── Size maps ────────────────────────────────────────────────────────────────
 
 const paddingMap: Record<ButtonSize, string> = {
   sm: 'px-3 py-1.5',
@@ -79,7 +46,6 @@ const stepperSizeMap: Record<ButtonSize, { btn: string; text: string; num: strin
   lg: { btn: 'w-11 h-11', text: 'text-2xl',  num: 'text-base min-w-[28px]' },
 };
 
-// ─── Solid / Outline / Ghost ─────────────────────────────────────────────────
 
 function StandardButton(props: SolidOutlineGhostProps) {
   const {
@@ -109,7 +75,6 @@ function StandardButton(props: SolidOutlineGhostProps) {
     secondary:'text-blue'
   };
 
-  // Image thumbnail size per button size
   const imgSizeMap: Record<ButtonSize, number> = { sm: 28, md: 36, lg: 44 };
   const imgSize = imgSizeMap[size];
 
@@ -130,7 +95,6 @@ function StandardButton(props: SolidOutlineGhostProps) {
         />
       ) : (
         <>
-          {/* Image thumbnail (e.g. category chip) */}
           {image && (
             <View
               className="rounded-full overflow-hidden bg-surface mr-2"
@@ -143,7 +107,6 @@ function StandardButton(props: SolidOutlineGhostProps) {
               />
             </View>
           )}
-          {/* Generic left icon (no image) */}
           {!image && leftIcon && <View className="mr-2">{leftIcon}</View>}
           <Text className={`font-dm-semibold ${textSizeMap[size]} ${textClass[variant]}`}>
             {label}
@@ -155,7 +118,6 @@ function StandardButton(props: SolidOutlineGhostProps) {
   );
 }
 
-// ─── Icon Button (Sort / Filter style) ───────────────────────────────────────
 
 function IconButton({ label, icon, onPress, size = 'lg', disabled = false }: IconButtonProps) {
   return (
@@ -173,7 +135,6 @@ function IconButton({ label, icon, onPress, size = 'lg', disabled = false }: Ico
   );
 }
 
-// ─── Stepper (− qty +) ───────────────────────────────────────────────────────
 
 function StepperButton({
   value: controlledValue,
@@ -201,7 +162,6 @@ function StepperButton({
   const s = stepperSizeMap[size];
   const opacity = disabled ? 'opacity-50' : '';
 
-  // Flow: when count is 0, show only '+'
   if (count <= 0) {
     return (
       <TouchableOpacity
@@ -215,7 +175,6 @@ function StepperButton({
     );
   }
 
-  // Otherwise show '- count +'
   return (
     <View className={`flex-row items-center bg-primary rounded-full overflow-hidden ${opacity}`}>
       <TouchableOpacity
@@ -243,7 +202,6 @@ function StepperButton({
   );
 }
 
-// ─── Main export ─────────────────────────────────────────────────────────────
 
 export default function AppButton(props: AppButtonProps) {
   if (props.variant === 'stepper') return <StepperButton {...props} />;

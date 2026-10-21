@@ -12,29 +12,12 @@ import {
 
 import { SearchIcon, QueIcon } from "@/assets";
 import { colors } from "@/themes/colors";
+import type { SearchTextInputProps } from "@/types";
 
-export interface SearchTextInputProps extends TextInputProps {
-  /** Custom component for the left icon (defaults to SearchIcon from assets) */
-  leftIcon?: React.ReactNode;
-  onPressLeftIcon?: () => void;
-
-  /** Custom component for the right icon (defaults to QueIcon from assets) */
-  rightIcon?: React.ReactNode;
-  onPressRightIcon?: () => void;
-
-  /** Whether to show the vertical divider between input and right icon (defaults to true) */
-  showDivider?: boolean;
-
-  /** Whether to show a clear ('✕') button when there is text in the input */
-  showClearButton?: boolean;
-  onClear?: () => void;
-
-  containerStyle?: StyleProp<ViewStyle>;
-  inputStyle?: StyleProp<TextStyle>;
-  dividerStyle?: StyleProp<ViewStyle>;
-}
+export type { SearchTextInputProps };
 
 export const SearchTextInput = forwardRef<TextInput, SearchTextInputProps>(
+
   (
     {
       leftIcon,
@@ -163,7 +146,7 @@ export const SearchTextInput = forwardRef<TextInput, SearchTextInputProps>(
           value={currentText}
           editable={editable}
           placeholder={placeholder}
-          placeholderTextColor="rgba(0, 0, 0, 0.7)"
+          placeholderTextColor={colors.black70}
           selectionColor="#18181B"
           returnKeyType="search"
           onFocus={(e) => {

@@ -12,37 +12,9 @@ import {
 import Svg, { Path } from "react-native-svg";
 import { VisibleIcon } from "@/assets";
 import { colors } from "@/themes/colors";
+import type { PasswordTextInputProps } from "@/types";
 
-export interface PasswordTextInputProps extends TextInputProps {
-  /** Label or header displayed above input (optional) */
-  label?: string;
-  /** Whether the field is required (displays asterisk) */
-  required?: boolean;
-  /** Error message displayed below input */
-  error?: string;
-
-  /** Whether to show the toggle password visibility icon (defaults to true) */
-  showToggle?: boolean;
-  /** Custom icon when password is shown */
-  visibleIcon?: React.ReactNode;
-  /** Custom icon when password is hidden */
-  hiddenIcon?: React.ReactNode;
-
-  /** Controlled password visibility state */
-  isPasswordVisible?: boolean;
-  /** Default password visibility on mount (defaults to false) */
-  defaultPasswordVisible?: boolean;
-  /** Callback fired when password visibility is toggled */
-  onToggleVisibility?: (isVisible: boolean) => void;
-
-  /** Optional left icon */
-  leftIcon?: React.ReactNode;
-
-  /** Container styling */
-  containerStyle?: StyleProp<ViewStyle>;
-  /** Input field styling */
-  inputStyle?: StyleProp<TextStyle>;
-}
+export type { PasswordTextInputProps };
 
 /** Built-in Hidden / Slashed Eye icon matching VisibleIcon's exact stroke & geometry */
 export function DefaultHiddenEyeIcon({ size = 20, color = "#000000" }: { size?: number; color?: string }) {
@@ -62,7 +34,6 @@ export function DefaultHiddenEyeIcon({ size = 20, color = "#000000" }: { size?: 
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      {/* Diagonal Slash */}
       <Path
         d="M2.5 13L17.5 1"
         stroke={color}
@@ -79,6 +50,7 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
       label,
       required = false,
       error,
+      errorStyle,
       showToggle = true,
       visibleIcon,
       hiddenIcon,
@@ -126,7 +98,7 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
     };
 
     const getBorderColor = () => {
-      if (error) return "#EF4444";
+      if (error) return colors.red;
       if (!editable) return colors.border;
       if (isFocused) return "#18181B";
       return "#E4E4E7";
@@ -134,7 +106,6 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
 
     return (
       <View className="w-full">
-        {/* Optional Label */}
         {label ? (
           <Text className="font-dm-medium text-xs text-zinc-500 mb-2 uppercase tracking-wider">
             {label}
@@ -142,7 +113,6 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
           </Text>
         ) : null}
 
-        {/* Input Container */}
         <Pressable
           onPress={() => {
             if (editable) {
@@ -163,10 +133,8 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
             containerStyle,
           ]}
         >
-          {/* Optional Left Icon */}
           {leftIcon && <View className="mr-3 justify-center items-center">{leftIcon}</View>}
 
-          {/* Password Input */}
           <TextInput
             ref={inputRef}
             value={currentText}
@@ -202,7 +170,6 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
             {...restProps}
           />
 
-          {/* Eye Visibility Toggle */}
           {showToggle && (
             <Pressable
               onPress={toggleVisibility}
@@ -218,9 +185,20 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
           )}
         </Pressable>
 
-        {/* Validation Error Message */}
         {error ? (
-          <Text className="text-red-500 font-dm-regular text-xs mt-1.5 ml-1">
+          <Text
+            style={[
+              {
+                color: colors.red,
+                fontFamily: "DMSans_400Regular",
+                fontSize: 12,
+                marginTop: 6,
+                marginLeft: 4,
+                lineHeight: 16,
+              },
+              errorStyle,
+            ]}
+          >
             {error}
           </Text>
         ) : null}
