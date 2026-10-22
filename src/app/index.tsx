@@ -32,7 +32,7 @@ export default function WelcomeScreen() {
           onPress={openSignIn}
         />
 
-        <Text className="text-center text-xs font-dm-regular text-black/70 mt-5 leading-5">
+        <Text className="text-center text-xs font-dm-regular text-black/70 mt-4 leading-5">
           By proceeding to use ZeroQue, you agree to our{" "}
           <Text className="underline decoration-black/70 font-dm-regular text-black/70">terms of service</Text>
           {"\n"}and{" "}

@@ -10,6 +10,8 @@ export const colors = {
     yellow: '#FEF3C6',
     border: '#D4D4D4',
     surface: '#F5F5F5',
+    catalogueBg: '#D4D4D8',
+
 
     // RGBA Opacity & Overlay colors
     black40: 'rgba(0, 0, 0, 0.4)',

@@ -12,7 +12,7 @@ module.exports = {
       colors: {
         ...colors,
       },
-      
+
       fontFamily: {
         sans: ["DMSans_400Regular"],
         "dm-regular": ["DMSans_400Regular"],
@@ -27,5 +27,4 @@ module.exports = {
 
 
 
- 
- 
+

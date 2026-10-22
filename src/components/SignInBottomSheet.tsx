@@ -154,7 +154,7 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
         showsVerticalScrollIndicator={false}
       >
         {/* Top Header Bar */}
-        <View className="flex-row items-center justify-between mb-5"
+        <View className="flex-row items-center justify-between mb-10"
          
         >
           {/* Close Button */}
@@ -188,7 +188,7 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
         {/* ── STEP 1: EMAIL SIGN IN ── */}
         {step === "email" && (
           <View style={{ flex: 1 }}>
-            <View style={{ alignItems: "center", marginBottom: 16 }}>
+            <View  className="items-center mb-7">
               <AppIcon width={48} height={48} />
             </View>
 
@@ -199,7 +199,7 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
             </Text>
 
             {/* Email input */}
-            <View style={{ marginBottom: 16 }}>
+            <View className="mb-4">
               <FloatingTextInput
                 label="Email address"
                 required
@@ -225,7 +225,7 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
             />
 
             {/* Legal */}
-            <Text className="font-dm-regular text-sm text-black/70 text-center mt-5 "
+            <Text className="font-dm-regular text-sm text-black/70 text-center mt-4 "
               
             >
               By proceeding to use ZeroQue, you agree to our{" "}
@@ -251,25 +251,25 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
             </View>
 
             {/* Title */}
-            <Text className="font-dm-bold text-2xl text-black text-center mb-4"
+            <Text className="font-dm-bold text-2xl text-black text-center mb-2"
             >
               Verify your email
             </Text>
 
             {/* Subtitle with email */}
-            <View style={{ marginBottom: 24, alignItems: "center" }}>
+            <View style={{ marginBottom: 16, alignItems: "center" }}>
               <Text className="font-dm-regular text-sm text-black/70 text-center" 
               
               >
                 Enter code sent to
               </Text>
-              <Text className="font-dm-semibold text-sm text-black text-center mt-2">
+              <Text className="font-dm-semibold text-sm text-black text-center mt-1">
                 {displayEmail}
               </Text>
             </View>
 
             {/* OTP Entry */}
-            <View style={{ marginBottom: 20, width: "100%" }}>
+            <View style={{ marginBottom: 16, width: "100%" }}>
               <OtpInput
                 numberOfDigits={6}
                 focusColor={colors.primary}
@@ -318,14 +318,9 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
             <TouchableOpacity
               onPress={() => setStep("email")}
               activeOpacity={0.7}
-              style={{ marginTop: 18, alignItems: "center" }}
+              style={{ marginTop: 16, alignItems: "center" }}
             >
-              <Text
-                style={{
-                  fontFamily: "DMSans_500Medium",
-                  fontSize: 14,
-                  color: "#18181B",
-                }}
+              <Text className="font-dm-medium text-black text-sm"
               >
                 Change email address
               </Text>
@@ -336,14 +331,7 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
               <TouchableOpacity
                 onPress={handleBack}
                 activeOpacity={0.7}
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
-                  backgroundColor: "#F4F4F5",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+                style={styles.headerIconButton}
               >
                 <BackIcon width={9} height={17} />
               </TouchableOpacity>
@@ -355,39 +343,26 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
         {step === "setPassword" && (
           <View style={{ flex: 1 }}>
             {/* Logo mark */}
-            <View style={{ alignItems: "center", marginBottom: 12 }}>
+            <View className="items-center mb-4" >
               <AppIcon width={44} height={46} />
             </View>
 
             {/* Title */}
-            <Text
-              style={{
-                fontFamily: "DMSans_700Bold",
-                fontSize: 22,
-                color: "#0a0a0a",
-                textAlign: "center",
-                marginBottom: 6,
-              }}
+            <Text className="font-dm-bold text-2xl text-black text-center mb-1"
+             
             >
               Welcome to ZeroQue!
             </Text>
 
             {/* Subtitle */}
-            <Text
-              style={{
-                fontFamily: "DMSans_400Regular",
-                fontSize: 13,
-                color: "#71717A",
-                textAlign: "center",
-                lineHeight: 18,
-                marginBottom: 18,
-              }}
+            <Text className="font-dm-regular text-sm text-black/70 text-center mb-8"
+             
             >
               Setup you account to join Northwind{"\n"}Distribution as a Requester
             </Text>
 
             {/* Email (Disabled / Read-only) */}
-            <View style={{ marginBottom: 10 }}>
+            <View  className="mb-4">
               <FloatingTextInput
                 label="Email address"
                 value={displayEmail}
@@ -396,7 +371,7 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
             </View>
 
             {/* Full Name (Disabled / Read-only) */}
-            <View style={{ marginBottom: 10 }}>
+            <View  className="mb-4">
               <FloatingTextInput
                 label="Full name"
                 value={fullName}
@@ -405,7 +380,7 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
             </View>
 
             {/* Create Password */}
-            <View style={{ marginBottom: 10 }}>
+            <View  className="mb-4">
               <PasswordTextInput
                 placeholder="Create Password"
                 value={createPassword}
@@ -414,7 +389,7 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
             </View>
 
             {/* Confirm Password */}
-            <View style={{ marginBottom: 16 }}>
+            <View  className="mb-4">
               <PasswordTextInput
                 placeholder="Confirm Password"
                 value={confirmPassword}
@@ -432,62 +407,31 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
             />
 
             {/* Legal */}
-            <Text
-              style={{
-                fontFamily: "DMSans_400Regular",
-                fontSize: 12,
-                color: "#818181",
-                textAlign: "center",
-                marginTop: 14,
-                lineHeight: 18,
-              }}
+            <Text 
+            className="font-dm-regular text-xs text-black/70 text-center mt-4"
+              
             >
               By proceeding to use ZeroQue, you agree to our{" "}
-              <Text >
+              <Text className="underline text-xs text-black/70 font-dm-regular" >
                 terms of service
               </Text>
               {"\n"}and{" "}
-              <Text style={{ textDecorationLine: "underline", color: "#818181" }}>
+              <Text className="underline text-xs text-black/70 font-dm-regular">
                 privacy policy
               </Text>
             </Text>
 
             {/* Bottom Actions Bar */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginTop: "auto",
-                paddingTop: 24,
-              }}
-            >
+            <View className="flex-row items-center justify-between mt-auto">
               <TouchableOpacity
                 onPress={handleBack}
                 activeOpacity={0.7}
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
-                  backgroundColor: "#F4F4F5",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+                style={styles.headerIconButton}
               >
                 <BackIcon width={9} height={17} />
               </TouchableOpacity>
 
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  backgroundColor: "#F4F4F5",
-                  borderRadius: 22,
-                  height: 44,
-                  paddingHorizontal: 16,
-                  gap: 16,
-                }}
-              >
+              <View style={styles.bottomActionPill}>
                 <TouchableOpacity activeOpacity={0.7}>
                   <ExportIcon width={16} height={18} />
                 </TouchableOpacity>
@@ -496,106 +440,45 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
                 </TouchableOpacity>
               </View>
             </View>
+
+          
           </View>
         )}
 
         {/* ── STEP 4: SIGNING YOU IN... ── */}
         {step === "signingIn" && (
           <View style={{ flex: 1 }}>
-            {/* Top-aligned Avatar & Status (matching screenshot) */}
-            <View style={{ alignItems: "center", marginTop: 16 }}>
-              {/* Dark Initial Avatar Circle */}
-              <View
-                style={{
-                  width: 46,
-                  height: 46,
-                  borderRadius: 23,
-                  backgroundColor: "#27272A",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: 16,
-                }}
-              >
-                <Text
-                  style={{
-                    fontFamily: "DMSans_600SemiBold",
-                    fontSize: 18,
-                    color: "#FFFFFF",
-                  }}
+            <View  className="items-center mt-4">
+              <View className="w-12 h-12 rounded-full bg-black items-center justify-center mb-4">
+            
+                <Text className="font-DMSans_600SemiBold text-lg text-white"
                 >
                   {displayEmail ? displayEmail.charAt(0).toLowerCase() : "s"}
                 </Text>
               </View>
 
               {/* Title */}
-              <Text
-                style={{
-                  fontFamily: "DMSans_700Bold",
-                  fontSize: 22,
-                  color: "#0a0a0a",
-                  textAlign: "center",
-                  marginBottom: 6,
-                }}
-              >
-                Signing you in...
+              <Text className="font-dm-bold text-2xl text-black text-center mb-1" >
+                  Signing you in...
+             </Text>
+
+              <Text className="font-dm-regular text-sm text-black/70 text-center ">
+               {displayEmail}
               </Text>
 
-              {/* User email */}
-              <Text
-                style={{
-                  fontFamily: "DMSans_400Regular",
-                  fontSize: 14,
-                  color: "#71717A",
-                  textAlign: "center",
-                }}
-              >
-                {displayEmail}
-              </Text>
-
-              {/* Loading spinner */}
-              <ActivityIndicator
-                size="small"
-                color={colors.primary}
-                style={{ marginTop: 24 }}
-              />
             </View>
 
             {/* Bottom Actions Bar (anchored at bottom) */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginTop: "auto",
-                paddingTop: 24,
-              }}
-            >
+            <View className="flex-row items-center justify-between mt-auto">
               <TouchableOpacity
                 onPress={handleBack}
                 activeOpacity={0.7}
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
-                  backgroundColor: "#F4F4F5",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+                style={styles.headerIconButton}
               >
                 <BackIcon width={9} height={17} />
               </TouchableOpacity>
 
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  backgroundColor: "#F4F4F5",
-                  borderRadius: 22,
-                  height: 44,
-                  paddingHorizontal: 16,
-                  gap: 16,
-                }}
-              >
+              <View style={styles.bottomActionPill}>
                 <TouchableOpacity activeOpacity={0.7}>
                   <ExportIcon width={16} height={18} />
                 </TouchableOpacity>
@@ -609,7 +492,7 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
 
         {/* ── STEP 5: EXPIRED INVITE ── */}
         {step === "expiredInvite" && (
-          <View style={{ flex: 1, justifyContent: "space-between" }}>
+          <View style={{ flex: 1, justifyContent: "space-between" }} >
             <View
               style={{
                 flex: 1,
@@ -620,34 +503,19 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
               }}
             >
               {/* Unlink / Broken Link Icon */}
-              <View style={{ marginBottom: 18 }}>
-                <UnlinkIcon width={44} height={44} />
+              <View style={{ marginBottom: 16 }}>
+                <UnlinkIcon width={48} height={48} />
               </View>
 
               {/* Title */}
-              <Text
-                style={{
-                  fontFamily: "DMSans_700Bold",
-                  fontSize: 22,
-                  color: "#0a0a0a",
-                  textAlign: "center",
-                  marginBottom: 8,
-                }}
+              <Text className="font-dm-bold text-2xl text-black text-center mb-1"
+                
               >
                 This invite has expired
               </Text>
 
               {/* Subtitle */}
-              <Text
-                style={{
-                  fontFamily: "DMSans_400Regular",
-                  fontSize: 13,
-                  color: "#71717A",
-                  textAlign: "center",
-                  lineHeight: 18,
-                  paddingHorizontal: 20,
-                  marginBottom: 24,
-                }}
+              <Text className="font-dm-regular text-sm text-black/70 text-center mb-4"
               >
                 Ask admin for a new one, or try signing in if you&apos;ve already set up your account.
               </Text>
@@ -665,41 +533,16 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
             </View>
 
             {/* Bottom Actions Bar */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginTop: "auto",
-                paddingTop: 24,
-              }}
-            >
+            <View className="flex-row items-center justify-between mt-auto">
               <TouchableOpacity
                 onPress={handleBack}
                 activeOpacity={0.7}
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
-                  backgroundColor: "#F4F4F5",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+                style={styles.headerIconButton}
               >
                 <BackIcon width={9} height={17} />
               </TouchableOpacity>
 
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  backgroundColor: "#F4F4F5",
-                  borderRadius: 22,
-                  height: 44,
-                  paddingHorizontal: 16,
-                  gap: 16,
-                }}
-              >
+              <View style={styles.bottomActionPill}>
                 <TouchableOpacity activeOpacity={0.7}>
                   <ExportIcon width={16} height={18} />
                 </TouchableOpacity>
@@ -716,6 +559,47 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
   );
 }
 
+const buttonShadow = {
+  shadowColor: colors.black,
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.09,
+  shadowRadius: 2,
+  elevation: 2,
+  boxShadow: [
+    {
+      offsetX: 0,
+      offsetY: 4,
+      blurRadius: 48,
+      spreadDistance: 0,
+      color: colors.shadowDrop,
+    },
+    {
+      offsetX: 0,
+      offsetY: 40,
+      blurRadius: 30,
+      spreadDistance: -40,
+      color: colors.shadowInnerLight,
+      inset: true,
+    },
+    {
+      offsetX: 0,
+      offsetY: -40,
+      blurRadius: 10,
+      spreadDistance: -50,
+      color: colors.shadowInnerDark,
+      inset: true,
+    },
+    {
+      offsetX: 0,
+      offsetY: 40,
+      blurRadius: 10,
+      spreadDistance: -50,
+      color: colors.shadowInnerDark,
+      inset: true,
+    },
+  ],
+};
+
 const styles = StyleSheet.create({
   headerIconButton: {
     width: 44,
@@ -724,45 +608,16 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     alignItems: "center",
     justifyContent: "center",
-    // Fallback shadow for platforms without boxShadow support
-    shadowColor: colors.black,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.09,
-    shadowRadius: 4,
-    elevation: 4,
-    // Figma Drop shadow & Inner shadows
-    boxShadow: [
-      {
-        offsetX: 0,
-        offsetY: 4,
-        blurRadius: 48,
-        spreadDistance: 0,
-        color: colors.shadowDrop,
-      },
-      {
-        offsetX: 0,
-        offsetY: 40,
-        blurRadius: 30,
-        spreadDistance: -40,
-        color: colors.shadowInnerLight,
-        inset: true,
-      },
-      {
-        offsetX: 0,
-        offsetY: -40,
-        blurRadius: 10,
-        spreadDistance: -50,
-        color: colors.shadowInnerDark,
-        inset: true,
-      },
-      {
-        offsetX: 0,
-        offsetY: 40,
-        blurRadius: 10,
-        spreadDistance: -50,
-        color: colors.shadowInnerDark,
-        inset: true,
-      },
-    ],
+    ...buttonShadow,
+  },
+  bottomActionPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: colors.white,
+    borderRadius: 22,
+    height: 44,
+    paddingHorizontal: 16,
+    gap: 24,
+    ...buttonShadow,
   },
 });
