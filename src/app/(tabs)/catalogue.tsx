@@ -130,7 +130,7 @@ export default function CatalogueScreen() {
 
               {/* 2. Categories Section */}
               <View className="mb-6 px-5">
-                <Text className="font-dm-semibold text-lg text-black mb-3">
+                <Text className="font-dm-bold text-2xl text-black mb-3">
                   Categories
                 </Text>
                 <View className="flex-row flex-wrap gap-2.5">
@@ -138,9 +138,10 @@ export default function CatalogueScreen() {
                     <AppButton
                       key={cat.id}
                       variant="outline"
-                      size="lg"
+                      size="md"
                       label={cat.name}
-                      leftIcon={<View className="w-5 h-5 rounded-full bg-surface" />}
+                      leftIcon={<View className="w-8 h-8 rounded-full bg-surface" />}
+                      className="h-[46px] pl-3 pr-4 rounded-2xl"
                       onPress={() => handleCategoryPress(cat.id, cat.name)}
                     />
                   ))}

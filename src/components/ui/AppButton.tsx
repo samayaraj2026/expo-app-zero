@@ -31,13 +31,13 @@ export type {
 
 const paddingMap: Record<ButtonSize, string> = {
   sm: 'px-3 py-1.5',
-  md: 'px-5 py-3',
-  lg: 'px-6 py-4',
+  md: 'px-3.5 py-2',
+  lg: 'px-4 py-4',
 };
 
 const textSizeMap: Record<ButtonSize, string> = {
   sm: 'text-xs',
-  md: 'text-sm',
+  md: 'text-[15px]',
   lg: 'text-base',
 };
 
@@ -65,7 +65,7 @@ const stepperSizeMap: Record<
     stepBtn: 'w-8 h-8',
     text: 'text-base',
     num: 'text-[16px] leading-[20px] min-w-[24px]',
-    container: 'w-[102px] h-[40px] px-1.5 justify-between',
+    container: 'w-[127px] h-[42px] px-1 justify-between',
     iconSize: 14,
   },
   lg: {
@@ -96,7 +96,7 @@ function StandardButton(props: SolidOutlineGhostProps) {
 
   const variantClass: Record<string, string> = {
     solid: 'bg-primary rounded-xl',
-    outline: 'border border-border rounded-xl bg-white',
+    outline: 'border border-border rounded-2xl bg-white',
     ghost: 'bg-transparent',
     secondary: 'bg-secondary rounded-xl',
   };
@@ -131,7 +131,7 @@ function StandardButton(props: SolidOutlineGhostProps) {
         <>
           {image && (
             <View
-              className="rounded-full overflow-hidden bg-surface mr-2"
+              className="rounded-full overflow-hidden bg-surface mr-3"
               style={{ width: imgSize, height: imgSize }}
             >
               <Image
