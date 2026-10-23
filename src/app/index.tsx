@@ -1,4 +1,4 @@
-﻿import { AppNameLogo } from "@/assets";
+import { AppNameLogo } from "@/assets";
 import SignInBottomSheet from "@/components/SignInBottomSheet";
 import AppButton from "@/components/ui/AppButton";
 import BottomSheet from "@gorhom/bottom-sheet";

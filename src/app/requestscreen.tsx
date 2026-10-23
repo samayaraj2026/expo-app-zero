@@ -8,7 +8,7 @@ export default function RequestStatusScreen() {
   const insets = useSafeAreaInsets();
 
   const handleContinue = () => {
-    router.replace("/");
+    router.replace("/(tabs)/home");
   };
 
   return (

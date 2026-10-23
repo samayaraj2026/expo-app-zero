@@ -17,7 +17,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Keyboard, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Keyboard, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { OtpInput } from "react-native-otp-entry";
 import type { SignInStep, SignInBottomSheetProps } from "@/types";
 

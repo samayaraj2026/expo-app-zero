@@ -1,5 +1,7 @@
 import type React from "react";
 import type {
+  Animated,
+  TextInput,
   TextInputProps,
   StyleProp,
   ViewStyle,
@@ -17,6 +19,32 @@ export interface FloatingTextInputProps
   errorStyle?: StyleProp<TextStyle>;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+}
+
+export interface UseFloatingTextInputOptions {
+  value?: string;
+  defaultValue?: string;
+  error?: string;
+  editable?: boolean;
+  onFocus?: TextInputProps['onFocus'];
+  onBlur?: TextInputProps['onBlur'];
+  onChangeText?: (text: string) => void;
+}
+
+export interface UseFloatingTextInputReturn {
+  inputRef: React.RefObject<TextInput | null>;
+  text: string;
+  isFocused: boolean;
+  isFloating: boolean;
+  animatedValue: Animated.Value;
+  handleFocus: NonNullable<TextInputProps['onFocus']>;
+  handleBlur: NonNullable<TextInputProps['onBlur']>;
+  handleChangeText: (newText: string) => void;
+  handleContainerPress: () => void;
+  labelTop: Animated.AnimatedInterpolation<number>;
+  labelFontSize: Animated.AnimatedInterpolation<number>;
+  labelColor: Animated.AnimatedInterpolation<string | number>;
+  borderColor: string;
 }
 
 export interface PasswordTextInputProps extends TextInputProps {

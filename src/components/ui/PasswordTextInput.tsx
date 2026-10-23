@@ -4,10 +4,6 @@ import {
   TextInput,
   Pressable,
   Text,
-  TextInputProps,
-  StyleProp,
-  ViewStyle,
-  TextStyle,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { VisibleIcon } from "@/assets";

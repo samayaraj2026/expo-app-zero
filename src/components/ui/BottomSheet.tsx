@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/immutability */
+import type { BottomSheetProps } from "@/types";
 import React, { useCallback, useEffect } from "react";
 import {
   Dimensions,
@@ -19,10 +21,7 @@ import Animated, {
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const ANIMATION_DURATION = 320;
 
-import type { BottomSheetProps } from "@/types";
-
 export default function BottomSheet({
-
   visible,
   onClose,
   children,
@@ -52,7 +51,7 @@ export default function BottomSheet({
       translateY.value = sheetHeight;
       backdropOpacity.value = 0;
     }
-  }, [visible]);
+  }, [visible, open, sheetHeight, translateY, backdropOpacity]);
 
   const sheetStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: translateY.value }],

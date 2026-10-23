@@ -1,5 +1,5 @@
-﻿import type React from "react";
-import type { ImageSourcePropType } from "react-native";
+import type React from "react";
+import type { ImageSourcePropType, StyleProp, ViewStyle } from "react-native";
 
 export type ButtonVariant = "solid" | "outline" | "ghost" | "stepper" | "icon";
 export type ButtonSize = "sm" | "md" | "lg";
@@ -8,6 +8,8 @@ export interface BaseProps {
   size?: ButtonSize;
   disabled?: boolean;
   loading?: boolean;
+  className?: string;
+  style?: StyleProp<ViewStyle>;
 }
 
 export interface SolidOutlineGhostProps extends BaseProps {
@@ -34,6 +36,8 @@ export interface StepperProps extends BaseProps {
   min?: number;
   max?: number;
   onValueChange?: (value: number) => void;
+  icon?: React.ReactNode;
+  label?: string;
 }
 
 export type AppButtonProps =

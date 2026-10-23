@@ -36,7 +36,7 @@ export default function CatalogueIntroScreen() {
   const insets = useSafeAreaInsets();
 
   const handleSkip = () => {
-    router.replace("/");
+    router.replace("/(tabs)/home");
   };
 
   const handleNext = () => {

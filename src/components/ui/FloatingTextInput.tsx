@@ -1,11 +1,5 @@
 import { colors } from "@/themes/colors";
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
+import React, { forwardRef, useImperativeHandle } from "react";
 import {
   View,
   TextInput,
@@ -13,10 +7,12 @@ import {
   Pressable,
   Text,
 } from "react-native";
+import { useFloatingTextInput } from "@/hooks";
 import type { FloatingTextInputProps } from "@/types";
 
-export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
+export type { FloatingTextInputProps };
 
+export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
   (
     {
       label,
@@ -39,88 +35,41 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
     },
     ref
   ) => {
-    const inputRef = useRef<TextInput>(null);
+    const {
+      inputRef,
+      text,
+      isFloating,
+      handleFocus,
+      handleBlur,
+      handleChangeText,
+      handleContainerPress,
+      labelTop,
+      labelFontSize,
+      labelColor,
+      borderColor,
+    } = useFloatingTextInput({
+      value: controlledValue,
+      defaultValue,
+      error,
+      editable,
+      onFocus,
+      onBlur,
+      onChangeText,
+    });
+
     useImperativeHandle(ref, () => inputRef.current as TextInput);
-
-    const [text, setText] = useState<string>(controlledValue ?? defaultValue ?? "");
-    const [isFocused, setIsFocused] = useState<boolean>(false);
-
-    useEffect(() => {
-      if (controlledValue !== undefined) {
-        setText(controlledValue);
-      }
-    }, [controlledValue]);
-
-    const hasValue = text.length > 0;
-    const isFloating = isFocused || hasValue;
-
-    const animatedValue = useRef(new Animated.Value(isFloating ? 1 : 0)).current;
-
-    useEffect(() => {
-      Animated.timing(animatedValue, {
-        toValue: isFloating ? 1 : 0,
-        duration: 160,
-        useNativeDriver: false,
-      }).start();
-    }, [isFloating, animatedValue]);
-
-    const handleFocus = (e: any) => {
-      setIsFocused(true);
-      onFocus?.(e);
-    };
-
-    const handleBlur = (e: any) => {
-      setIsFocused(false);
-      onBlur?.(e);
-    };
-
-    const handleChangeText = (newText: string) => {
-      if (controlledValue === undefined) {
-        setText(newText);
-      }
-      onChangeText?.(newText);
-    };
-
-    const labelTop = animatedValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [editable ? 18 : 9, 9],
-    });
-
-    const labelFontSize = animatedValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [editable ? 16 : 12, 12],
-    });
-
-    const labelColor = animatedValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [
-        editable ? colors.black : colors.black40,
-        editable ? colors.black70 : colors.black40,
-      ],
-    });
-
-    const getBorderColor = () => {
-      if (error) return colors.red;
-      if (!editable) return colors.border;
-      if (isFocused) return colors.border;
-      return "#e4e4e7";
-    };
 
     return (
       <View className="w-full">
         <Pressable
-          onPress={() => {
-            if (editable) {
-              inputRef.current?.focus();
-            }
-          }}
+          onPress={handleContainerPress}
           style={[
             {
               height: 56,
               borderRadius: 12,
               borderWidth: 1,
-              borderColor: getBorderColor(),
-              backgroundColor: editable ? colors.white: colors.surface,
+              borderColor,
+              backgroundColor: editable ? colors.white : colors.surface,
               paddingHorizontal: 16,
               justifyContent: "center",
               position: "relative",
