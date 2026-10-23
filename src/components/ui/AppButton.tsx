@@ -65,7 +65,7 @@ const stepperSizeMap: Record<
     stepBtn: 'w-8 h-8',
     text: 'text-base',
     num: 'text-[16px] leading-[20px] min-w-[24px]',
-    container: 'w-[127px] h-[42px] px-1 justify-between',
+    container: 'w-[102px] h-[40px] px-1 justify-between',
     iconSize: 14,
   },
   lg: {
