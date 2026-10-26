@@ -83,3 +83,5 @@ export interface ProductSectionProps {
   onProductPress?: (product: Product) => void;
   onAddToCart?: (product: Product, quantity: number) => void;
 }
+
+export type { SupplierDetailsData, SupplierRatingBreakdown } from "@/constants/supplier";

@@ -23,11 +23,10 @@ export default function RequestStatusScreen() {
 
       <View className="items-center px-6 mt-20">
         <Text className="font-dm-bold text-4xl text-black text-center mb-2">
-          Know exactly where{"\n"}every request stands
+          Know exactly where every request stands
         </Text>
         <Text className="font-dm-regular text-base text-black/70 text-center">
-          From submitted to delivered, see the full history and{"\n"}who
-          it&apos;s waiting on.
+          From submitted to delivered, see the full history and who it&apos;s waiting on.
         </Text>
       </View>
 

@@ -226,7 +226,15 @@ function ProductDetailsScreen() {
             variant="ghost"
             label={product.supplier}
             rightIcon={<NextIcon width={6} height={10} stroke="#1D4ED8" />}
-            onPress={() => {}}
+            onPress={() => {
+              router.push({
+                pathname: "/supplierdetails",
+                params: {
+                  id: product.id,
+                  supplier: product.supplier,
+                },
+              });
+            }}
             className="mt-1.5 self-start px-0 py-0"
             style={{ paddingHorizontal: 0, paddingVertical: 0 }}
             textStyle={{

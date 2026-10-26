@@ -14,33 +14,83 @@ import { colors } from "@/themes/colors";
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetScrollView,
+  useBottomSheetInternal,
 } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  Keyboard,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Keyboard, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { OtpInput } from "react-native-otp-entry";
 import type { SignInStep, SignInBottomSheetProps } from "@/types";
 
 export type { SignInStep, SignInBottomSheetProps };
 
-export default function SignInBottomSheet({
-  sheetRef,
-}: SignInBottomSheetProps) {
+function BottomSheetOtpInput(props: React.ComponentProps<typeof OtpInput>) {
+  const internalContext = useBottomSheetInternal(true);
+
+  return (
+    <OtpInput
+      {...props}
+      onFocus={() => {
+        if (internalContext) {
+          internalContext.animatedKeyboardState.set((state) => ({
+            ...state,
+            target: 1,
+          }));
+        }
+        props.onFocus?.();
+      }}
+      onBlur={() => {
+        if (internalContext) {
+          internalContext.animatedKeyboardState.set((state) => ({
+            ...state,
+            target: undefined,
+          }));
+        }
+        props.onBlur?.();
+      }}
+    />
+  );
+}
+
+export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) {
+  const insets = useSafeAreaInsets();
+  const scrollRef = useRef<any>(null);
   const [step, setStep] = useState<SignInStep>("email");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [otp, setOtp] = useState("");
   const [fullName] = useState("Sarah Jones");
   const [createPassword, setCreatePassword] = useState("");
+  const [createPasswordError, setCreatePasswordError] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
-  const snapPoints = useMemo(() => ["65%", "85%"], []);
+  const snapPoints = useMemo(() => ["65%", "92%"], []);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+
+    const showSub = Keyboard.addListener(showEvent, (e) => {
+      setKeyboardHeight(e.endCoordinates.height);
+    });
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
+  const handleInputFocus = (offsetY: number) => {
+    setTimeout(() => {
+      scrollRef.current?.scrollTo({ y: offsetY, animated: true });
+    }, 150);
+  };
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -66,7 +116,9 @@ export default function SignInBottomSheet({
       setEmailError("");
       setOtp("");
       setCreatePassword("");
+      setCreatePasswordError("");
       setConfirmPassword("");
+      setConfirmPasswordError("");
     }
   };
 
@@ -96,6 +148,20 @@ export default function SignInBottomSheet({
 
   const handlePasswordContinue = () => {
     Keyboard.dismiss();
+    const trimmedCreate = createPassword.trim();
+    const trimmedConfirm = confirmPassword.trim();
+    if (!trimmedCreate) {
+      setCreatePasswordError("Please enter a password");
+      return;
+    }
+    if (!trimmedConfirm) {
+      setConfirmPasswordError("Please confirm your password");
+      return;
+    }
+    if (trimmedCreate !== trimmedConfirm) {
+      setConfirmPasswordError("Passwords do not match");
+      return;
+    }
     setStep("signingIn");
   };
 
@@ -147,15 +213,22 @@ export default function SignInBottomSheet({
       backdropComponent={renderBackdrop}
       handleIndicatorStyle={{ display: "none" }}
       backgroundStyle={{ borderTopLeftRadius: 28, borderTopRightRadius: 28 }}
-      keyboardBehavior="extend"
+      keyboardBehavior="fillParent"
       keyboardBlurBehavior="restore"
+      android_keyboardInputMode="adjustResize"
+      enableBlurKeyboardOnGesture
+      topInset={insets.top}
+      bottomInset={insets.bottom}
     >
       <BottomSheetScrollView
+        ref={scrollRef}
         contentContainerStyle={{
           flexGrow: 1,
           paddingHorizontal: 24,
           paddingTop: 8,
-          paddingBottom: 28,
+          paddingBottom: keyboardHeight > 0
+            ? keyboardHeight + 10
+            : Math.max(insets.bottom, 28) + 20,
         }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -208,6 +281,7 @@ export default function SignInBottomSheet({
                 required
                 value={email}
                 error={emailError}
+                onFocus={() => handleInputFocus(60)}
                 onChangeText={(text) => {
                   setEmail(text);
                   if (emailError) setEmailError("");
@@ -266,7 +340,7 @@ export default function SignInBottomSheet({
 
             {/* OTP Entry */}
             <View style={{ marginBottom: 16, width: "100%" }}>
-              <OtpInput
+              <BottomSheetOtpInput
                 numberOfDigits={6}
                 focusColor={colors.primary}
                 autoFocus={false}
@@ -376,7 +450,15 @@ export default function SignInBottomSheet({
               <PasswordTextInput
                 placeholder="Create Password"
                 value={createPassword}
-                onChangeText={setCreatePassword}
+                error={createPasswordError}
+                onFocus={() => handleInputFocus(180)}
+                onChangeText={(val) => {
+                  setCreatePassword(val);
+                  if (createPasswordError) setCreatePasswordError("");
+                  if (confirmPassword && confirmPasswordError === "Passwords do not match" && val === confirmPassword) {
+                    setConfirmPasswordError("");
+                  }
+                }}
               />
             </View>
 
@@ -385,7 +467,13 @@ export default function SignInBottomSheet({
               <PasswordTextInput
                 placeholder="Confirm Password"
                 value={confirmPassword}
-                onChangeText={setConfirmPassword}
+                error={confirmPasswordError}
+                disablePaste
+                onFocus={() => handleInputFocus(260)}
+                onChangeText={(val) => {
+                  setConfirmPassword(val);
+                  if (confirmPasswordError) setConfirmPasswordError("");
+                }}
               />
             </View>
 
