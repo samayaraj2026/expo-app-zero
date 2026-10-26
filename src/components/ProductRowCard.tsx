@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Image } from 'expo-image';
-import { AppButton } from '@/components/ui';
-import type { ProductRowCardProps } from '@/types';
+import React, { memo, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image } from "expo-image";
+import { AppButton } from "@/components/ui";
+import type { ProductRowCardProps } from "@/types";
 
-export default function ProductRowCard({
+const ProductRowCard = memo(function ProductRowCard({
   product,
   onPress,
   onAddToCart,
@@ -32,7 +32,7 @@ export default function ProductRowCard({
         {product.imageUrl ? (
           <Image
             source={{ uri: product.imageUrl }}
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: "100%", height: "100%" }}
             contentFit="cover"
             transition={200}
           />
@@ -98,12 +98,14 @@ export default function ProductRowCard({
       </View>
     </TouchableOpacity>
   );
-}
+});
+
+export default ProductRowCard;
 
 const styles = StyleSheet.create({
   actionButton: {
-    width: '100%',
-    alignSelf: 'stretch',
+    width: "100%",
+    alignSelf: "stretch",
     height: 40,
     borderRadius: 8,
     // gap: 6,
@@ -111,12 +113,12 @@ const styles = StyleSheet.create({
     padding: 8,
     paddingHorizontal: 8,
     paddingVertical: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   stepperButton: {
-    width: '100%',
-    alignSelf: 'stretch',
+    width: "100%",
+    alignSelf: "stretch",
     height: 40,
     borderRadius: 8,
     // gap: 6,
@@ -124,8 +126,7 @@ const styles = StyleSheet.create({
     padding: 8,
     paddingHorizontal: 16,
     paddingVertical: 8,
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });
-

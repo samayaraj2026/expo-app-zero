@@ -8,8 +8,10 @@ import type {
   TextStyle,
 } from "react-native";
 
-export interface FloatingTextInputProps
-  extends Omit<TextInputProps, "placeholder"> {
+export interface FloatingTextInputProps extends Omit<
+  TextInputProps,
+  "placeholder"
+> {
   label: string;
   required?: boolean;
   error?: string;
@@ -26,8 +28,8 @@ export interface UseFloatingTextInputOptions {
   defaultValue?: string;
   error?: string;
   editable?: boolean;
-  onFocus?: TextInputProps['onFocus'];
-  onBlur?: TextInputProps['onBlur'];
+  onFocus?: TextInputProps["onFocus"];
+  onBlur?: TextInputProps["onBlur"];
   onChangeText?: (text: string) => void;
 }
 
@@ -37,8 +39,8 @@ export interface UseFloatingTextInputReturn {
   isFocused: boolean;
   isFloating: boolean;
   animatedValue: Animated.Value;
-  handleFocus: NonNullable<TextInputProps['onFocus']>;
-  handleBlur: NonNullable<TextInputProps['onBlur']>;
+  handleFocus: NonNullable<TextInputProps["onFocus"]>;
+  handleBlur: NonNullable<TextInputProps["onBlur"]>;
   handleChangeText: (newText: string) => void;
   handleContainerPress: () => void;
   labelTop: Animated.AnimatedInterpolation<number>;

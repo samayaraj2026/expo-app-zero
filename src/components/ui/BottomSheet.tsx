@@ -38,10 +38,16 @@ export default function BottomSheet({
 
   const close = useCallback(() => {
     Keyboard.dismiss();
-    translateY.value = withTiming(sheetHeight, { duration: ANIMATION_DURATION });
-    backdropOpacity.value = withTiming(0, { duration: ANIMATION_DURATION }, () => {
-      runOnJS(onClose)();
+    translateY.value = withTiming(sheetHeight, {
+      duration: ANIMATION_DURATION,
     });
+    backdropOpacity.value = withTiming(
+      0,
+      { duration: ANIMATION_DURATION },
+      () => {
+        runOnJS(onClose)();
+      },
+    );
   }, [translateY, backdropOpacity, sheetHeight, onClose]);
 
   useEffect(() => {
@@ -64,7 +70,12 @@ export default function BottomSheet({
   if (!visible) return null;
 
   return (
-    <Modal transparent animationType="none" visible={visible} onRequestClose={close}>
+    <Modal
+      transparent
+      animationType="none"
+      visible={visible}
+      onRequestClose={close}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.flex}
@@ -75,7 +86,9 @@ export default function BottomSheet({
         </Animated.View>
 
         {/* Sheet */}
-        <Animated.View style={[styles.sheet, { height: sheetHeight }, sheetStyle]}>
+        <Animated.View
+          style={[styles.sheet, { height: sheetHeight }, sheetStyle]}
+        >
           {/* Drag handle */}
           <View style={styles.handle} />
           <View style={styles.content}>{children}</View>

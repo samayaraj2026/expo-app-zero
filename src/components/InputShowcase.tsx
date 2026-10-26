@@ -1,4 +1,8 @@
-import { FloatingTextInput, PasswordTextInput, SearchTextInput } from "@/components/ui";
+import {
+  FloatingTextInput,
+  PasswordTextInput,
+  SearchTextInput,
+} from "@/components/ui";
 import { useState } from "react";
 import { Text, View } from "react-native";
 
@@ -10,7 +14,6 @@ export default function InputShowcase() {
 
   return (
     <View className="flex-1">
-      
       <Text className="font-dm-bold text-2xl text-zinc-900 mb-1">
         Password Input
       </Text>

@@ -1,14 +1,14 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from "react";
 import {
   DEFAULT_CART_COUNT,
   TAB_BAR_BOTTOM_SPACING,
   TAB_BAR_MIN_BOTTOM,
-} from '@/constants/tabBar';
+} from "@/constants/tabBar";
 import type {
   CustomTabBarProps,
   FloatingTabBarHookResult,
   TabRoute,
-} from '@/types/tabBar';
+} from "@/types/tabBar";
 
 /**
  * Custom hook encapsulating navigation state, positioning calculations,
@@ -24,8 +24,12 @@ export function useFloatingTabBar({
 
   // Floating bottom spacing respecting device safe areas with clear breathing room
   const bottomPosition = useMemo(
-    () => Math.max((insets?.bottom ?? 0) + TAB_BAR_BOTTOM_SPACING, TAB_BAR_MIN_BOTTOM),
-    [insets?.bottom]
+    () =>
+      Math.max(
+        (insets?.bottom ?? 0) + TAB_BAR_BOTTOM_SPACING,
+        TAB_BAR_MIN_BOTTOM,
+      ),
+    [insets?.bottom],
   );
 
   const activeRoute = state.routes[state.index];
@@ -36,25 +40,26 @@ export function useFloatingTabBar({
     () =>
       state.routes.filter(
         (route) =>
-          descriptors[route.key]?.options?.href !== null && route.name !== 'category'
+          descriptors[route.key]?.options?.href !== null &&
+          route.name !== "category",
       ),
-    [state.routes, descriptors]
+    [state.routes, descriptors],
   );
 
   const isRouteFocused = useCallback(
     (route: TabRoute): boolean => {
       const isCatalogueFocused =
-        route.name === 'catalogue' &&
-        (activeRouteName === 'catalogue' || activeRouteName === 'category');
+        route.name === "catalogue" &&
+        (activeRouteName === "catalogue" || activeRouteName === "category");
       return isCatalogueFocused || activeRouteName === route.name;
     },
-    [activeRouteName]
+    [activeRouteName],
   );
 
   const handleTabPress = useCallback(
     (route: TabRoute, isFocused: boolean): void => {
       const event = navigation.emit({
-        type: 'tabPress',
+        type: "tabPress",
         target: route.key,
         canPreventDefault: true,
       });
@@ -63,17 +68,17 @@ export function useFloatingTabBar({
         navigation.navigate(route.name, route.params);
       }
     },
-    [navigation]
+    [navigation],
   );
 
   const handleTabLongPress = useCallback(
     (route: TabRoute): void => {
       navigation.emit({
-        type: 'tabLongPress',
+        type: "tabLongPress",
         target: route.key,
       });
     },
-    [navigation]
+    [navigation],
   );
 
   const getTabLabel = useCallback(
@@ -85,15 +90,15 @@ export function useFloatingTabBar({
         options.tabBarLabel !== undefined
           ? options.tabBarLabel
           : options.title !== undefined
-          ? options.title
-          : route.name;
+            ? options.title
+            : route.name;
 
-      if (typeof rawLabel === 'string') {
+      if (typeof rawLabel === "string") {
         return rawLabel.charAt(0).toUpperCase() + rawLabel.slice(1);
       }
       return String(rawLabel);
     },
-    [descriptors]
+    [descriptors],
   );
 
   return {

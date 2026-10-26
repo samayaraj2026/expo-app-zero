@@ -1,10 +1,5 @@
-import React, { memo } from 'react';
-import {
-  CartIcon,
-  CatalogueIcon,
-  HomeIcon,
-  ProfileIcon,
-} from '@/assets';
+import React, { memo } from "react";
+import { CartIcon, CatalogueIcon, HomeIcon, ProfileIcon } from "@/assets";
 import {
   TAB_ACTIVE_PILL_BG,
   TAB_BAR_BLUR_INTENSITY,
@@ -19,40 +14,35 @@ import {
   TAB_PILL_BORDER_RADIUS,
   TAB_PILL_HEIGHT,
   TAB_PILL_WIDTH,
-} from '@/constants/tabBar';
-import { useFloatingTabBar } from '@/hooks';
-import { colors } from '@/themes/colors';
-import type { CustomTabBarProps, TabRoute } from '@/types/tabBar';
-import { BlurView } from 'expo-blur';
-import { Tabs } from 'expo-router';
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+} from "@/constants/tabBar";
+import { useFloatingTabBar } from "@/hooks";
+import { colors } from "@/themes/colors";
+import type { CustomTabBarProps, TabRoute } from "@/types/tabBar";
+import { BlurView } from "expo-blur";
+import { Tabs } from "expo-router";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 /**
  * Render tab bar icons matching reference design specifications.
  */
 function renderTabIcon(routeName: string, cartCount: number) {
   switch (routeName) {
-    case 'home':
+    case "home":
       return (
         <HomeIcon
           width={TAB_ICON_SIZES.home.width}
           height={TAB_ICON_SIZES.home.height}
         />
       );
-    case 'catalogue':
+    case "catalogue":
       return (
         <CatalogueIcon
           width={TAB_ICON_SIZES.catalogue.width}
           height={TAB_ICON_SIZES.catalogue.height}
         />
       );
-    case 'cart':
+    case "cart":
       return (
         <View className="relative w-6 h-6 items-center justify-center">
           <CartIcon
@@ -68,7 +58,7 @@ function renderTabIcon(routeName: string, cartCount: number) {
           )}
         </View>
       );
-    case 'profile':
+    case "profile":
       return (
         <ProfileIcon
           width={TAB_ICON_SIZES.profile.width}
@@ -139,12 +129,7 @@ const FloatingTabBar = memo(function FloatingTabBar(props: CustomTabBarProps) {
               onLongPress={() => handleTabLongPress(route)}
               className="flex-1 items-center justify-center h-full"
             >
-              <View
-                style={[
-                  styles.pill,
-                  isFocused && styles.activePill,
-                ]}
-              >
+              <View style={[styles.pill, isFocused && styles.activePill]}>
                 <View className="w-6 h-6 items-center justify-center">
                   {renderTabIcon(route.name, cartCount)}
                 </View>
@@ -183,32 +168,32 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: 'Home',
+          title: "Home",
         }}
       />
       <Tabs.Screen
         name="catalogue"
         options={{
-          title: 'Catalogue',
+          title: "Catalogue",
         }}
       />
       <Tabs.Screen
         name="category"
         options={{
-          title: 'Category',
+          title: "Category",
           href: null,
         }}
       />
       <Tabs.Screen
         name="cart"
         options={{
-          title: 'Cart',
+          title: "Cart",
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
+          title: "Profile",
         }}
       />
     </Tabs>
@@ -217,35 +202,35 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   floatingContainer: {
-    position: 'absolute',
+    position: "absolute",
     left: TAB_BAR_HORIZONTAL_OFFSET,
     right: TAB_BAR_HORIZONTAL_OFFSET,
     height: TAB_BAR_HEIGHT,
     borderRadius: TAB_BAR_BORDER_RADIUS,
     ...TAB_BAR_SHADOW,
     boxShadow: TAB_BAR_BOX_SHADOW,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   glassBackground: {
     borderRadius: 34,
     borderWidth: 1,
     borderColor: TAB_BAR_BORDER_COLOR,
-    backgroundColor: 'transparent',
-    overflow: 'hidden',
+    backgroundColor: "transparent",
+    overflow: "hidden",
   },
   pill: {
     width: TAB_PILL_WIDTH,
     height: TAB_PILL_HEIGHT,
     borderRadius: TAB_PILL_BORDER_RADIUS,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-    overflow: 'hidden',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent",
+    overflow: "hidden",
   },
   activePill: {
     backgroundColor: TAB_ACTIVE_PILL_BG,
     borderRadius: TAB_PILL_BORDER_RADIUS,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
 });

@@ -1,7 +1,8 @@
 import type BottomSheet from "@gorhom/bottom-sheet";
 import type React from "react";
 
-export type SignInStep = "email" | "otp" | "setPassword" | "signingIn" | "expiredInvite";
+export type SignInStep =
+  "email" | "otp" | "setPassword" | "signingIn" | "expiredInvite";
 
 export interface SignInBottomSheetProps {
   sheetRef: React.RefObject<BottomSheet | null>;

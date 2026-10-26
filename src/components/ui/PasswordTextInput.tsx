@@ -1,10 +1,10 @@
-import React, { forwardRef, useRef, useImperativeHandle, useState } from "react";
-import {
-  View,
-  TextInput,
-  Pressable,
-  Text,
-} from "react-native";
+import React, {
+  forwardRef,
+  useRef,
+  useImperativeHandle,
+  useState,
+} from "react";
+import { View, TextInput, Pressable, Text } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { VisibleIcon } from "@/assets";
 import { colors } from "@/themes/colors";
@@ -13,7 +13,13 @@ import type { PasswordTextInputProps } from "@/types";
 export type { PasswordTextInputProps };
 
 /** Built-in Hidden / Slashed Eye icon matching VisibleIcon's exact stroke & geometry */
-export function DefaultHiddenEyeIcon({ size = 20, color = "#000000" }: { size?: number; color?: string }) {
+export function DefaultHiddenEyeIcon({
+  size = 20,
+  color = "#000000",
+}: {
+  size?: number;
+  color?: string;
+}) {
   return (
     <Svg width={size} height={(size * 14) / 20} viewBox="0 0 20 14" fill="none">
       <Path
@@ -66,16 +72,21 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
       onBlur,
       ...restProps
     },
-    ref
+    ref,
   ) => {
     const inputRef = useRef<TextInput>(null);
     useImperativeHandle(ref, () => inputRef.current as TextInput);
 
-    const [text, setText] = useState<string>(controlledValue ?? defaultValue ?? "");
+    const [text, setText] = useState<string>(
+      controlledValue ?? defaultValue ?? "",
+    );
     const [isFocused, setIsFocused] = useState<boolean>(false);
-    const [internalVisible, setInternalVisible] = useState<boolean>(defaultPasswordVisible);
+    const [internalVisible, setInternalVisible] = useState<boolean>(
+      defaultPasswordVisible,
+    );
 
-    const isVisible = controlledVisible !== undefined ? controlledVisible : internalVisible;
+    const isVisible =
+      controlledVisible !== undefined ? controlledVisible : internalVisible;
     const currentText = controlledValue !== undefined ? controlledValue : text;
 
     const handleChangeText = (val: string) => {
@@ -129,7 +140,9 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
             containerStyle,
           ]}
         >
-          {leftIcon && <View className="mr-3 justify-center items-center">{leftIcon}</View>}
+          {leftIcon && (
+            <View className="mr-3 justify-center items-center">{leftIcon}</View>
+          )}
 
           <TextInput
             ref={inputRef}
@@ -200,7 +213,7 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
         ) : null}
       </View>
     );
-  }
+  },
 );
 
 PasswordTextInput.displayName = "PasswordTextInput";

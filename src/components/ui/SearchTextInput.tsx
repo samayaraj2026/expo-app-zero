@@ -1,10 +1,10 @@
-import React, { forwardRef, useRef, useImperativeHandle, useState } from "react";
-import {
-  View,
-  TextInput,
-  Pressable,
-  Text,
-} from "react-native";
+import React, {
+  forwardRef,
+  useRef,
+  useImperativeHandle,
+  useState,
+} from "react";
+import { View, TextInput, Pressable, Text } from "react-native";
 
 import { SearchIcon, QueIcon } from "@/assets";
 import { colors } from "@/themes/colors";
@@ -13,7 +13,6 @@ import type { SearchTextInputProps } from "@/types";
 export type { SearchTextInputProps };
 
 export const SearchTextInput = forwardRef<TextInput, SearchTextInputProps>(
-
   (
     {
       leftIcon,
@@ -34,12 +33,14 @@ export const SearchTextInput = forwardRef<TextInput, SearchTextInputProps>(
       style,
       ...restProps
     },
-    ref
+    ref,
   ) => {
     const inputRef = useRef<TextInput>(null);
     useImperativeHandle(ref, () => inputRef.current as TextInput);
 
-    const [text, setText] = useState<string>(controlledValue ?? defaultValue ?? "");
+    const [text, setText] = useState<string>(
+      controlledValue ?? defaultValue ?? "",
+    );
     const [isFocused, setIsFocused] = useState<boolean>(false);
 
     const currentText = controlledValue !== undefined ? controlledValue : text;
@@ -59,7 +60,12 @@ export const SearchTextInput = forwardRef<TextInput, SearchTextInputProps>(
     };
 
     const renderLeft = () => {
-      const content = leftIcon !== undefined ? leftIcon : <SearchIcon width={15} height={15} />;
+      const content =
+        leftIcon !== undefined ? (
+          leftIcon
+        ) : (
+          <SearchIcon width={15} height={15} />
+        );
       if (!content) return null;
 
       if (onPressLeftIcon) {
@@ -73,11 +79,20 @@ export const SearchTextInput = forwardRef<TextInput, SearchTextInputProps>(
           </Pressable>
         );
       }
-      return <View className="mr-3 justify-center items-center pointer-events-none">{content}</View>;
+      return (
+        <View className="mr-3 justify-center items-center pointer-events-none">
+          {content}
+        </View>
+      );
     };
 
     const renderRight = () => {
-      const iconNode = rightIcon !== undefined ? rightIcon : <QueIcon width={20} height={18.33} />;
+      const iconNode =
+        rightIcon !== undefined ? (
+          rightIcon
+        ) : (
+          <QueIcon width={20} height={18.33} />
+        );
       if (!iconNode) return null;
 
       const rightNode = onPressRightIcon ? (
@@ -176,7 +191,9 @@ export const SearchTextInput = forwardRef<TextInput, SearchTextInputProps>(
             hitSlop={8}
             className="w-5 h-5 rounded-full bg-zinc-300 justify-center items-center mr-1 active:opacity-70"
           >
-            <Text className="text-zinc-700 font-dm-bold text-xs leading-none">✕</Text>
+            <Text className="text-zinc-700 font-dm-bold text-xs leading-none">
+              ✕
+            </Text>
           </Pressable>
         )}
 
@@ -184,7 +201,7 @@ export const SearchTextInput = forwardRef<TextInput, SearchTextInputProps>(
         {renderRight()}
       </Pressable>
     );
-  }
+  },
 );
 
 SearchTextInput.displayName = "SearchTextInput";

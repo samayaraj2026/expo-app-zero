@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
-import { Image } from 'expo-image';
-import { PlusIcon } from '@/assets';
-import { AppButton } from '@/components/ui';
-import type { ProductCardProps } from '@/types';
-import { colors } from '@/themes/colors';
+import React, { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { Image } from "expo-image";
+import { PlusIcon } from "@/assets";
+import { AppButton } from "@/components/ui";
+import type { ProductCardProps } from "@/types";
+import { colors } from "@/themes/colors";
 
 export default function ProductCard({
   product,
@@ -31,7 +31,7 @@ export default function ProductCard({
           {product.imageUrl ? (
             <Image
               source={{ uri: product.imageUrl }}
-              style={{ width: '100%', height: '100%' }}
+              style={{ width: "100%", height: "100%" }}
               contentFit="cover"
               transition={200}
             />
@@ -43,7 +43,7 @@ export default function ProductCard({
         {/* Action Button at bottom rightmost place based on reference image */}
         <View
           style={{
-            position: 'absolute',
+            position: "absolute",
             bottom: -4,
             right: -4,
             zIndex: 10,
@@ -54,7 +54,7 @@ export default function ProductCard({
             variant="stepper"
             size="md"
             value={quantity}
-            icon={<PlusIcon width={14} height={14} stroke={colors.white}/>}
+            icon={<PlusIcon width={14} height={14} stroke={colors.white} />}
             onValueChange={handleQuantityChange}
           />
         </View>

@@ -34,9 +34,13 @@ export default function WelcomeScreen() {
 
         <Text className="text-center text-xs font-dm-regular text-black/70 mt-4 leading-5">
           By proceeding to use ZeroQue, you agree to our{" "}
-          <Text className="underline decoration-black/70 font-dm-regular text-black/70">terms of service</Text>
+          <Text className="underline decoration-black/70 font-dm-regular text-black/70">
+            terms of service
+          </Text>
           {"\n"}and{" "}
-          <Text className="underline decoration-black/70 font-dm-regular text-black/70">privacy policy</Text>
+          <Text className="underline decoration-black/70 font-dm-regular text-black/70">
+            privacy policy
+          </Text>
         </Text>
       </View>
 

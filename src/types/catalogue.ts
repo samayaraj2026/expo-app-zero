@@ -11,6 +11,45 @@ export interface Product {
   inStock?: boolean;
 }
 
+export interface ProductVariant {
+  id: string;
+  title: string;
+  subtitle: string;
+  price: number;
+  originalPrice?: number;
+  inStock: boolean;
+  productCode: string;
+  size?: string;
+  weight?: string;
+  colour?: string;
+  sheetsPerReam?: number | string;
+}
+
+export interface ProductDetailsData {
+  id: string;
+  name: string;
+  category: string;
+  supplier: string;
+  supplierUrl?: string;
+  rating: number;
+  ratingCount: string;
+  price: number;
+  originalPrice?: number;
+  currency: string;
+  images: string[];
+  inStock: boolean;
+  deliveryEstimate: string;
+  about: string;
+  variants: ProductVariant[];
+  details: {
+    productCode: string;
+    size: string;
+    weight: string;
+    colour: string;
+    sheetsPerReam: string | number;
+  };
+}
+
 export interface Category {
   id: string;
   name: string;

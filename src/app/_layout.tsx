@@ -41,8 +41,15 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="cataloguescreen" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="cataloguescreen"
+            options={{ headerShown: false }}
+          />
           <Stack.Screen name="requestscreen" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="productdetails"
+            options={{ headerShown: false }}
+          />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>

@@ -1,14 +1,9 @@
-
 import AppButton from "@/components/ui/AppButton";
 import { CARD_CLASS, CATALOGUE_COLUMNS } from "@/constants";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-
-
-
 
 function CatalogueColumn({
   marginTop,
@@ -18,15 +13,9 @@ function CatalogueColumn({
   count: number;
 }) {
   return (
-    <View
-      className="items-center gap-3"
-      style={{ marginTop }}
-    >
+    <View className="items-center gap-3" style={{ marginTop }}>
       {Array.from({ length: count }, (_, index) => (
-        <View
-          key={index}
-          className={CARD_CLASS}
-        />
+        <View key={index} className={CARD_CLASS} />
       ))}
     </View>
   );
@@ -65,9 +54,7 @@ export default function CatalogueIntroScreen() {
             right: 10,
           }}
         >
-          <Text className="font-dm-medium text-base text-black">
-            Skip
-          </Text>
+          <Text className="font-dm-medium text-base text-black">Skip</Text>
         </TouchableOpacity>
       </View>
 
@@ -77,7 +64,9 @@ export default function CatalogueIntroScreen() {
         </Text>
 
         <Text className="text-center font-dm-regular text-base text-black/70">
-          {"Browse approved products, add what you need, and\nsubmit, no spreadsheets, no guesswork."}
+          {
+            "Browse approved products, add what you need, and\nsubmit, no spreadsheets, no guesswork."
+          }
         </Text>
       </View>
 

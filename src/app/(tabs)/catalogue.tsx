@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState } from "react";
 import {
   FlatList,
   Keyboard,
@@ -6,22 +6,21 @@ import {
   Text,
   TouchableWithoutFeedback,
   View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
-import { AppButton, SearchTextInput } from '@/components/ui';
-import ProductSection from '@/components/ProductSection';
-import ProductCard from '@/components/ProductCard';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
+import { AppButton, SearchTextInput } from "@/components/ui";
+import ProductSection from "@/components/ProductSection";
+import ProductCard from "@/components/ProductCard";
 import {
   CATALOGUE_CATEGORIES,
   CATALOGUE_SECTIONS,
   ORDER_AGAIN_PRODUCTS,
-} from '@/constants/catalogue';
-import type { Product } from '@/types';
+} from "@/constants/catalogue";
+import type { Product } from "@/types";
 
 export default function CatalogueScreen() {
-  const [searchQuery, setSearchQuery] = useState('');
-
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Filter products when search query is entered
   const filteredSearchResults = useMemo(() => {
@@ -41,16 +40,19 @@ export default function CatalogueScreen() {
   }, [searchQuery]);
 
   const handleSeeAll = (sectionId: string, sectionTitle?: string) => {
-    const title = sectionTitle || (sectionId === 'order_again' ? 'Order again' : sectionId);
+    const title =
+      sectionTitle || (sectionId === "order_again" ? "Order again" : sectionId);
     router.push({
-      pathname: '/(tabs)/category',
+      pathname: "/(tabs)/category",
       params: { id: sectionId, name: title },
     });
   };
 
-
   const handleProductPress = (product: Product) => {
-    console.log(`Product pressed: ${product.name} (${product.id})`);
+    router.push({
+      pathname: "/productdetails",
+      params: { id: product.id },
+    });
   };
 
   const handleAddToCart = (product: Product, quantity: number) => {
@@ -59,14 +61,13 @@ export default function CatalogueScreen() {
 
   const handleCategoryPress = (categoryId: string, categoryName: string) => {
     router.push({
-      pathname: '/(tabs)/category',
+      pathname: "/(tabs)/category",
       params: { id: categoryId, name: categoryName },
     });
   };
 
-
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['top']}>
+    <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View className="flex-1">
           {/* Top Search Input */}
@@ -76,7 +77,7 @@ export default function CatalogueScreen() {
               value={searchQuery}
               onChangeText={setSearchQuery}
               showClearButton={Boolean(searchQuery)}
-              onClear={() => setSearchQuery('')}
+              onClear={() => setSearchQuery("")}
             />
           </View>
 
@@ -92,13 +93,15 @@ export default function CatalogueScreen() {
                     No products found for &quot;{searchQuery}&quot;
                   </Text>
                 </View>
-
               ) : (
                 <FlatList
                   data={filteredSearchResults}
                   keyExtractor={(item) => item.id}
                   numColumns={2}
-                  columnWrapperStyle={{ justifyContent: 'space-around', marginBottom: 16 }}
+                  columnWrapperStyle={{
+                    justifyContent: "space-around",
+                    marginBottom: 16,
+                  }}
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{ paddingBottom: 110 }}
                   renderItem={({ item }) => (
@@ -117,13 +120,12 @@ export default function CatalogueScreen() {
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingBottom: 110 }}
               contentInsetAdjustmentBehavior="automatic"
-              
             >
               {/* 1. Order Again Section */}
               <ProductSection
                 title="Order again"
                 products={ORDER_AGAIN_PRODUCTS}
-                onSeeAll={() => handleSeeAll('order_again')}
+                onSeeAll={() => handleSeeAll("order_again")}
                 onProductPress={handleProductPress}
                 onAddToCart={handleAddToCart}
               />
@@ -140,7 +142,9 @@ export default function CatalogueScreen() {
                       variant="outline"
                       size="md"
                       label={cat.name}
-                      leftIcon={<View className="w-8 h-8 rounded-full bg-surface" />}
+                      leftIcon={
+                        <View className="w-8 h-8 rounded-full bg-surface" />
+                      }
                       className="h-[46px] pl-3 pr-4 rounded-2xl"
                       onPress={() => handleCategoryPress(cat.id, cat.name)}
                     />
@@ -149,18 +153,18 @@ export default function CatalogueScreen() {
               </View>
 
               {/* 3. Category Sections */}
-              {CATALOGUE_SECTIONS.filter((s) => s.id !== 'order_again').map((section) => (
-                <ProductSection
-                  key={section.id}
-                  title={section.title}
-                  products={section.products}
-                  onSeeAll={() => handleSeeAll(section.id, section.title)}
-                  onProductPress={handleProductPress}
-                  onAddToCart={handleAddToCart}
-                />
-              ))}
-
-
+              {CATALOGUE_SECTIONS.filter((s) => s.id !== "order_again").map(
+                (section) => (
+                  <ProductSection
+                    key={section.id}
+                    title={section.title}
+                    products={section.products}
+                    onSeeAll={() => handleSeeAll(section.id, section.title)}
+                    onProductPress={handleProductPress}
+                    onAddToCart={handleAddToCart}
+                  />
+                ),
+              )}
             </ScrollView>
           )}
         </View>

@@ -1,12 +1,6 @@
 import { colors } from "@/themes/colors";
 import React, { forwardRef, useImperativeHandle } from "react";
-import {
-  View,
-  TextInput,
-  Animated,
-  Pressable,
-  Text,
-} from "react-native";
+import { View, TextInput, Animated, Pressable, Text } from "react-native";
 import { useFloatingTextInput } from "@/hooks";
 import type { FloatingTextInputProps } from "@/types";
 
@@ -33,7 +27,7 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
       style,
       ...restProps
     },
-    ref
+    ref,
   ) => {
     const {
       inputRef,
@@ -97,11 +91,16 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
             {required && (
               <Text
                 style={{
-                  color: editable ? (isFloating ? colors.black70 : colors.black) : colors.black40,
+                  color: editable
+                    ? isFloating
+                      ? colors.black70
+                      : colors.black
+                    : colors.black40,
                   fontFamily: "DMSans_400Regular",
                 }}
               >
-                {" "}*
+                {" "}
+                *
               </Text>
             )}
           </Animated.Text>
@@ -160,7 +159,7 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
         ) : null}
       </View>
     );
-  }
+  },
 );
 
 FloatingTextInput.displayName = "FloatingTextInput";

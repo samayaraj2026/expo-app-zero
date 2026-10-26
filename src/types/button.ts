@@ -1,5 +1,10 @@
 import type React from "react";
-import type { ImageSourcePropType, StyleProp, ViewStyle } from "react-native";
+import type {
+  ImageSourcePropType,
+  StyleProp,
+  TextStyle,
+  ViewStyle,
+} from "react-native";
 
 export type ButtonVariant = "solid" | "outline" | "ghost" | "stepper" | "icon";
 export type ButtonSize = "sm" | "md" | "lg";
@@ -10,12 +15,14 @@ export interface BaseProps {
   loading?: boolean;
   className?: string;
   style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
+  textClassName?: string;
 }
 
 export interface SolidOutlineGhostProps extends BaseProps {
   variant?: "solid" | "outline" | "ghost" | "secondary";
   label: string;
-  onPress: () => void;
+  onPress?: () => void;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   fullWidth?: boolean;
@@ -40,7 +47,18 @@ export interface StepperProps extends BaseProps {
   label?: string;
 }
 
+export interface BackButtonProps {
+  onPress?: () => void;
+  activeOpacity?: number;
+  style?: StyleProp<ViewStyle>;
+  className?: string;
+  disabled?: boolean;
+  testID?: string;
+  iconWidth?: number;
+  iconHeight?: number;
+  strokeColor?: string;
+  strokeWidth?: number;
+}
+
 export type AppButtonProps =
-  | SolidOutlineGhostProps
-  | IconButtonProps
-  | StepperProps;
+  SolidOutlineGhostProps | IconButtonProps | StepperProps;

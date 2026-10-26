@@ -26,7 +26,8 @@ export default function RequestStatusScreen() {
           Know exactly where{"\n"}every request stands
         </Text>
         <Text className="font-dm-regular text-base text-black/70 text-center">
-          From submitted to delivered, see the full history and{"\n"}who it&apos;s waiting on.
+          From submitted to delivered, see the full history and{"\n"}who
+          it&apos;s waiting on.
         </Text>
       </View>
 

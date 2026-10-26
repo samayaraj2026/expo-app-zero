@@ -6,5 +6,4 @@ export const CATALOGUE_COLUMNS = [
   { id: "right", marginTop: 173, count: 2 },
 ];
 
-export const CARD_CLASS =
-  "w-[80px] h-[96px] rounded-[12px] bg-catalogueBg";
+export const CARD_CLASS = "w-[80px] h-[96px] rounded-[12px] bg-catalogueBg";

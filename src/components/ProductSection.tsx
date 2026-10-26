@@ -1,9 +1,9 @@
-import React from 'react';
-import { FlatList, Text, View } from 'react-native';
-import { AppButton } from '@/components/ui';
-import { NextIcon } from '@/assets';
-import ProductCard from './ProductCard';
-import type { ProductSectionProps } from '@/types';
+import React from "react";
+import { FlatList, Text, View } from "react-native";
+import { AppButton } from "@/components/ui";
+import { NextIcon } from "@/assets";
+import ProductCard from "./ProductCard";
+import type { ProductSectionProps } from "@/types";
 
 export default function ProductSection({
   title,

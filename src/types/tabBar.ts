@@ -1,6 +1,6 @@
-import type { EdgeInsets } from 'react-native-safe-area-context';
+import type { EdgeInsets } from "react-native-safe-area-context";
 
-export type TabName = 'home' | 'catalogue' | 'category' | 'cart' | 'profile';
+export type TabName = "home" | "catalogue" | "category" | "cart" | "profile";
 
 export interface TabRoute {
   key: string;
