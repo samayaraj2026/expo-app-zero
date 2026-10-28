@@ -140,7 +140,7 @@ export const SearchTextInput = forwardRef<TextInput, SearchTextInputProps>(
             borderRadius: 8,
             backgroundColor: colors.surface,
             borderWidth: 1,
-            borderColor: colors.surface,
+            borderColor: isFocused ? colors.primary : colors.surface,
             paddingHorizontal: 16,
             flexDirection: "row",
             alignItems: "center",

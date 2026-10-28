@@ -60,5 +60,26 @@ export interface BackButtonProps {
   strokeWidth?: number;
 }
 
+export interface SearchCartPillProps {
+  onSearchPress?: () => void;
+  onCartPress?: () => void;
+  cartCount?: number;
+  showCartBadge?: boolean;
+  style?: StyleProp<ViewStyle>;
+  className?: string;
+  activeOpacity?: number;
+  hitSlop?: import("react-native").Insets | number;
+  searchIconWidth?: number;
+  searchIconHeight?: number;
+  searchIconStroke?: string;
+  cartIconWidth?: number;
+  cartIconHeight?: number;
+  cartIconStroke?: string;
+  testID?: string;
+  searchTestID?: string;
+  cartTestID?: string;
+}
+
 export type AppButtonProps =
   SolidOutlineGhostProps | IconButtonProps | StepperProps;
+

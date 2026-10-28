@@ -1,10 +1,11 @@
-import React, {
-  forwardRef,
-  useRef,
-  useImperativeHandle,
-  useState,
-} from "react";
-import { View, TextInput, Pressable, Text } from "react-native";
+import React, { forwardRef, useRef, useImperativeHandle, useState } from "react";
+import {
+  View,
+  TextInput,
+  Pressable,
+  Text,
+} from "react-native";
+import { BottomSheetTextInput, useBottomSheetInternal } from "@gorhom/bottom-sheet";
 import Svg, { Path } from "react-native-svg";
 import { VisibleIcon } from "@/assets";
 import { colors } from "@/themes/colors";
@@ -46,6 +47,20 @@ export function DefaultHiddenEyeIcon({
   );
 }
 
+function getInsertedCharsCount(oldStr: string, newStr: string): number {
+  let start = 0;
+  while (start < oldStr.length && start < newStr.length && oldStr[start] === newStr[start]) {
+    start++;
+  }
+  let oldEnd = oldStr.length - 1;
+  let newEnd = newStr.length - 1;
+  while (oldEnd >= start && newEnd >= start && oldStr[oldEnd] === newStr[newEnd]) {
+    oldEnd--;
+    newEnd--;
+  }
+  return Math.max(0, newEnd - start + 1);
+}
+
 export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
   (
     {
@@ -70,10 +85,15 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
       style,
       onFocus,
       onBlur,
+      disablePaste = false,
+      onPasteAttempt,
       ...restProps
     },
     ref,
   ) => {
+    const isInsideBottomSheet = Boolean(useBottomSheetInternal(true));
+    const InputComponent = (isInsideBottomSheet ? BottomSheetTextInput : TextInput) as any;
+
     const inputRef = useRef<TextInput>(null);
     useImperativeHandle(ref, () => inputRef.current as TextInput);
 
@@ -90,6 +110,13 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
     const currentText = controlledValue !== undefined ? controlledValue : text;
 
     const handleChangeText = (val: string) => {
+      if (disablePaste) {
+        const insertedCount = getInsertedCharsCount(currentText, val);
+        if (insertedCount > 1) {
+          onPasteAttempt?.();
+          return;
+        }
+      }
       if (controlledValue === undefined) {
         setText(val);
       }
@@ -144,7 +171,7 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
             <View className="mr-3 justify-center items-center">{leftIcon}</View>
           )}
 
-          <TextInput
+          <InputComponent
             ref={inputRef}
             value={currentText}
             editable={editable}
@@ -155,11 +182,12 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
             autoCorrect={false}
             textContentType="newPassword"
             selectionColor="#18181B"
-            onFocus={(e) => {
+            contextMenuHidden={disablePaste ? true : restProps.contextMenuHidden}
+            onFocus={(e: any) => {
               setIsFocused(true);
               onFocus?.(e);
             }}
-            onBlur={(e) => {
+            onBlur={(e: any) => {
               setIsFocused(false);
               onBlur?.(e);
             }}

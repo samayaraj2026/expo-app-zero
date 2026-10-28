@@ -63,6 +63,8 @@ export interface PasswordTextInputProps extends TextInputProps {
   leftIcon?: React.ReactNode;
   containerStyle?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<TextStyle>;
+  disablePaste?: boolean;
+  onPasteAttempt?: () => void;
 }
 
 export interface SearchTextInputProps extends TextInputProps {

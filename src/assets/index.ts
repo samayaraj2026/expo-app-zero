@@ -19,8 +19,11 @@ import MinusIcon from "./svg/minusIcon.svg";
 import SortIcon from "./svg/sortIcon.svg";
 import FilterIcon from "./svg/filterIcon.svg";
 import StarIcon from "./svg/StarIcon.svg";
-import ConfirmedIcon from './svg/confirmedIcon.svg'
-import OutofStockIcon from './svg/out_of_stock_Icon.svg'
+import StarAltIcon from "./svg/star.svg";
+import ConfirmedIcon from "./svg/confirmedIcon.svg";
+import OutofStockIcon from "./svg/out_of_stock_Icon.svg";
+import CopyIcon from "./svg/copy.svg";
+import VerifiedIcon from "./svg/verified.svg";
 
 export {
   SearchIcon,
@@ -44,6 +47,9 @@ export {
   SortIcon,
   FilterIcon,
   StarIcon,
+  StarAltIcon,
   ConfirmedIcon,
   OutofStockIcon,
+  CopyIcon,
+  VerifiedIcon,
 };

@@ -1,6 +1,13 @@
 import { colors } from "@/themes/colors";
 import React, { forwardRef, useImperativeHandle } from "react";
-import { View, TextInput, Animated, Pressable, Text } from "react-native";
+import {
+  View,
+  TextInput,
+  Animated,
+  Pressable,
+  Text,
+} from "react-native";
+import { BottomSheetTextInput, useBottomSheetInternal } from "@gorhom/bottom-sheet";
 import { useFloatingTextInput } from "@/hooks";
 import type { FloatingTextInputProps } from "@/types";
 
@@ -29,6 +36,9 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
     },
     ref,
   ) => {
+    const isInsideBottomSheet = Boolean(useBottomSheetInternal(true));
+    const InputComponent = (isInsideBottomSheet ? BottomSheetTextInput : TextInput) as any;
+
     const {
       inputRef,
       text,
@@ -105,7 +115,7 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
             )}
           </Animated.Text>
 
-          <TextInput
+          <InputComponent
             ref={inputRef}
             value={controlledValue !== undefined ? controlledValue : text}
             editable={editable}

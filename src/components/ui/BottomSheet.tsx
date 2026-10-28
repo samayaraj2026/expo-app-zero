@@ -70,21 +70,16 @@ export default function BottomSheet({
   if (!visible) return null;
 
   return (
-    <Modal
-      transparent
-      animationType="none"
-      visible={visible}
-      onRequestClose={close}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.flex}
-      >
-        {/* Backdrop */}
-        <Animated.View style={[styles.backdrop, backdropStyle]}>
-          <Pressable style={styles.flex} onPress={close} />
-        </Animated.View>
+    <Modal transparent animationType="none" visible={visible} onRequestClose={close}>
+      {/* Backdrop */}
+      <Animated.View style={[styles.backdrop, backdropStyle]}>
+        <Pressable style={styles.flex} onPress={close} />
+      </Animated.View>
 
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={styles.keyboardContainer}
+      >
         {/* Sheet */}
         <Animated.View
           style={[styles.sheet, { height: sheetHeight }, sheetStyle]}
@@ -104,16 +99,16 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill,
     backgroundColor: "rgba(0,0,0,0.45)",
   },
-
+  keyboardContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
   sheet: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
     backgroundColor: "#fff",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingBottom: 24,
+    width: "100%",
   },
   handle: {
     width: 40,

@@ -1,12 +1,10 @@
 import {
-  CartIcon,
   ConfirmedIcon,
   NextIcon,
   OutofStockIcon,
-  SearchIcon,
   StarIcon,
 } from "@/assets";
-import { AppButton, BackButton } from "@/components/ui";
+import { AppButton, BackButton, SearchCartPill } from "@/components/ui";
 import VariantCard from "@/components/VariantCard";
 import { getProductDetails } from "@/constants/catalogue";
 import { colors } from "@/themes/colors";
@@ -21,7 +19,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { Carousel } from "react-native-reanimated-carousel";
@@ -96,27 +93,7 @@ function ProductDetailsScreen() {
         <BackButton style={styles.headerBackButton} />
 
         {/* Right Search & Cart Pill */}
-        <View style={styles.topRightPill}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => router.push("/(tabs)/catalogue")}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <SearchIcon width={18} height={18} stroke="#000000" />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => router.push("/(tabs)/cart")}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            style={{ position: "relative" }}
-          >
-            <CartIcon width={16} height={18} stroke="#000000" />
-            <View style={styles.cartBadge}>
-              <Text style={styles.cartBadgeText}>1</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+        <SearchCartPill />
       </View>
 
       <ScrollView
@@ -215,9 +192,17 @@ function ProductDetailsScreen() {
             <AppButton
               variant="ghost"
               label={product.supplier}
-              rightIcon={<NextIcon width={4} height={8} color={colors.blue} />}
-              onPress={() => { }}
-              className="mt-1.5 self-start px-0 py-0"
+              rightIcon={<NextIcon width={6} height={10} />}
+              onPress={() => {
+                router.push({
+                  pathname: "/supplierdetails",
+                  params: {
+                    id: product.id,
+                    supplier: product.supplier,
+                  },
+                });
+              }}
+              className="mt-0.5 self-start px-0 py-0"
               style={{
                 paddingLeft: 0,
                 paddingRight: 0,
@@ -447,39 +432,7 @@ const styles = StyleSheet.create({
     shadowRadius: 16,
     elevation: 4,
   },
-  topRightPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    height: 44,
-    paddingHorizontal: 20,
-    paddingVertical: 13,
-    borderRadius: 22,
-    backgroundColor: "#FFFFFF",
-    boxShadow: "0px 8px 32px 0px rgba(0, 0, 0, 0.08)",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    elevation: 4,
-    gap: 20,
-  },
-  cartBadge: {
-    position: "absolute",
-    top: -6,
-    right: -8,
-    backgroundColor: "#EF4444",
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  cartBadgeText: {
-    color: "#FFFFFF",
-    fontSize: 10,
-    fontFamily: "DMSans_700Bold",
-    lineHeight: 12,
-  },
+
   bottomBar: {
     position: "absolute",
     bottom: 0,

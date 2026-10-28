@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.white,
     alignItems: "center",
     justifyContent: "center",
     // Exact drop shadow from design spec: box-shadow: 0px 8px 32px 0px rgba(0, 0, 0, 0.12);
