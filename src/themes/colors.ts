@@ -16,6 +16,9 @@ export const colors = {
   black40: "rgba(0, 0, 0, 0.4)",
   black70: "rgba(0, 0, 0, 0.7)",
   semi_transparent_white: "#FFFFFF8F", // rgba(255, 255, 255, 0.56)
+  carousel_dot: '#0000001A',
+  content_default_secondary: '#000000B2',
+  Content_Default_Disabled: '#00000066',
 
   // Figma Shadow RGBA colors
   shadowDrop: "rgba(0, 0, 0, 0.09)",

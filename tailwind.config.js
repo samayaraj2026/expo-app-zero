@@ -10,6 +10,12 @@ module.exports = {
         ...colors,
       },
 
+      fontSize: {
+        13: ["0.8125rem", { lineHeight: "1.125rem" }],
+        "13px": ["0.8125rem", { lineHeight: "1.125rem" }],
+        xsm: ["0.8125rem", { lineHeight: "1.125rem" }],
+      },
+
       fontFamily: {
         sans: ["DMSans_400Regular"],
         "dm-regular": ["DMSans_400Regular"],

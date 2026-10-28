@@ -18,6 +18,9 @@ import PlusIcon from "./svg/plusIcon.svg";
 import MinusIcon from "./svg/minusIcon.svg";
 import SortIcon from "./svg/sortIcon.svg";
 import FilterIcon from "./svg/filterIcon.svg";
+import StarIcon from "./svg/StarIcon.svg";
+import ConfirmedIcon from './svg/confirmedIcon.svg'
+import OutofStockIcon from './svg/out_of_stock_Icon.svg'
 
 export {
   SearchIcon,
@@ -40,4 +43,7 @@ export {
   MinusIcon,
   SortIcon,
   FilterIcon,
+  StarIcon,
+  ConfirmedIcon,
+  OutofStockIcon,
 };

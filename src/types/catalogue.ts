@@ -83,3 +83,10 @@ export interface ProductSectionProps {
   onProductPress?: (product: Product) => void;
   onAddToCart?: (product: Product, quantity: number) => void;
 }
+
+export interface VariantCardProps {
+  variant: ProductVariant;
+  isSelected: boolean;
+  currency?: string;
+  onSelect: (variant: ProductVariant) => void;
+}

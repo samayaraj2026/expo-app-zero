@@ -1271,7 +1271,6 @@ export const DEFAULT_PRODUCT_IMAGES: string[] = [
   "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=800&q=80",
   "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=800&q=80",
   "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
-  "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&w=800&q=80",
 ];
 
 export const DEFAULT_PRODUCT_VARIANTS: ProductVariant[] = [
