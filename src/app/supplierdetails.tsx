@@ -2,11 +2,11 @@ import React, { memo, useCallback, useMemo, useState } from "react";
 import { Alert, FlatList, Linking, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
-import ProductRowCard from "@/components/ProductRowCard";
 import {
   SupplierAboutSection,
   SupplierHeader,
   SupplierNavBar,
+  SupplierProductCard,
   SupplierProductFilters,
   SupplierReviewsCard,
   SupplierStats,
@@ -154,7 +154,7 @@ function SupplierDetailsScreen() {
   const renderProductItem = useCallback(
     ({ item }: { item: Product }) => (
       <View className="px-5">
-        <ProductRowCard
+        <SupplierProductCard
           product={item}
           onPress={handleProductPress}
           onAddToCart={handleAddToCart}

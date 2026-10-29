@@ -38,21 +38,62 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <StatusBar style="auto" />
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            animation: "slide_from_right",
+            animationDuration: 280,
+            gestureEnabled: true,
+            fullScreenGestureEnabled: true,
+          }}
+        >
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+              animation: "fade",
+              animationDuration: 250,
+            }}
+          />
+          <Stack.Screen
+            name="index"
+            options={{
+              headerShown: false,
+              animation: "fade",
+              animationDuration: 250,
+            }}
+          />
           <Stack.Screen
             name="cataloguescreen"
-            options={{ headerShown: false }}
+            options={{
+              headerShown: false,
+              animation: "slide_from_right",
+              animationDuration: 280,
+            }}
           />
-          <Stack.Screen name="requestscreen" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="requestscreen"
+            options={{
+              headerShown: false,
+              animation: "slide_from_right",
+              animationDuration: 280,
+            }}
+          />
           <Stack.Screen
             name="productdetails"
-            options={{ headerShown: false }}
+            options={{
+              headerShown: false,
+              animation: "slide_from_right",
+              animationDuration: 280,
+            }}
           />
           <Stack.Screen
             name="supplierdetails"
-            options={{ headerShown: false }}
+            options={{
+              headerShown: false,
+              animation: "slide_from_right",
+              animationDuration: 280,
+            }}
           />
         </Stack>
       </SafeAreaProvider>

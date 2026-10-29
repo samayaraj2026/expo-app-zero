@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { AppButton, SearchTextInput } from "@/components/ui";
+import { CATALOGUE_CATEGORIES } from "@/constants/catalogue";
 
 export interface SupplierProductFiltersProps {
   productsCount: number;
@@ -24,64 +25,64 @@ export const SupplierProductFilters = memo(function SupplierProductFilters({
   return (
     <View className="mb-4">
       {/* Products Heading & Count Badge */}
-      <View className="flex-row items-center gap-2 mb-3.5">
+      <View className="flex-row items-center gap-2 mb-3">
         <Text className="font-dm-bold text-lg text-black">Products</Text>
-        <View className="bg-surface px-2.5 py-1 rounded-lg">
+        <View className="bg-surface px-2 py-0.5 rounded-md">
           <Text className="font-dm-semibold text-xs text-black">
             {productsCount}
           </Text>
         </View>
       </View>
 
-      {/* Reusable Search Bar */}
-      <View className="mb-3.5">
+      {/* Search Bar matching screenshot */}
+      <View className="mb-3">
         <SearchTextInput
           placeholder={`Search ${supplierName}`}
           value={searchQuery}
           onChangeText={onSearchChange}
           showClearButton={Boolean(searchQuery)}
           onClear={() => onSearchChange("")}
+          showDivider={false}
+          rightIcon={null}
+          containerStyle={{
+            height: 44,
+            borderRadius: 12,
+            backgroundColor: "#F4F5F7",
+            borderWidth: 0,
+            paddingHorizontal: 14,
+          }}
+          inputStyle={{
+            fontSize: 14,
+            fontFamily: "DMSans_400Regular",
+            color: "#111827",
+          }}
         />
       </View>
 
-      {/* Reusable Category Filter Pills */}
+      {/* Category Filter Pills from Catalogue screen */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerClassName="flex-row gap-2"
+        contentContainerClassName="flex-row gap-2.5 pb-1"
       >
-        {categoryFilters.map((category) => {
-          const isSelected = selectedCategory === category;
-          return (
-            <AppButton
-              key={category}
-              variant= "outline"
-              size="md"
-              label={category}
-              leftIcon={
-                <View
-                  className={`w-2.5 h-2.5 rounded-full ${
-                    isSelected ? "bg-blue-300" : "bg-gray/30"
-                  }`}
-                />
-              }
-              className={
-                isSelected
-                  ? "rounded-full px-3.5 py-2"
-                  : "rounded-full px-3.5 py-2 border-border/60 bg-white"
-              }
-              textClassName={
-                isSelected
-                  ? "text-white font-dm-semibold text-xs"
-                  : "text-black70 font-dm-medium text-xs"
-              }
-              onPress={() => onSelectCategory(isSelected ? null : category)}
-            />
-          );
-        })}
+        {CATALOGUE_CATEGORIES.map((cat) => (
+                           <AppButton
+                             key={cat.id}
+                             variant="outline"
+                             size="md"
+                             label={cat.name}
+                             leftIcon={
+                               <View className="w-8 h-8 rounded-full bg-surface" />
+                             }
+                             className="h-[46px] pl-3 pr-4 rounded-2xl"
+                             
+                           />
+                         ))}
       </ScrollView>
     </View>
   );
 });
 
 export default SupplierProductFilters;
+
+

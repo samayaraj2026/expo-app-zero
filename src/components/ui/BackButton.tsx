@@ -21,7 +21,8 @@ const BackButton = memo(function BackButton({
     if (onPress) {
       onPress();
     } else {
-      router.back();
+      if (router.canGoBack())
+        router.back();
     }
   };
 

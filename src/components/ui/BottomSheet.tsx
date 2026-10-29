@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/immutability */
 import type { BottomSheetProps } from "@/types";
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import {
   Dimensions,
   Keyboard,
@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import Animated, {
+  Easing,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -19,7 +20,8 @@ import Animated, {
 } from "react-native-reanimated";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
-const ANIMATION_DURATION = 320;
+const ANIMATION_DURATION = 400;
+const EASING = Easing.bezier(0.25, 1, 0.5, 1);
 
 export default function BottomSheet({
   visible,
@@ -32,18 +34,25 @@ export default function BottomSheet({
   const backdropOpacity = useSharedValue(0);
 
   const open = useCallback(() => {
-    translateY.value = withTiming(0, { duration: ANIMATION_DURATION });
-    backdropOpacity.value = withTiming(1, { duration: ANIMATION_DURATION });
+    translateY.value = withTiming(0, {
+      duration: ANIMATION_DURATION,
+      easing: EASING,
+    });
+    backdropOpacity.value = withTiming(1, {
+      duration: ANIMATION_DURATION,
+      easing: EASING,
+    });
   }, [translateY, backdropOpacity]);
 
   const close = useCallback(() => {
     Keyboard.dismiss();
     translateY.value = withTiming(sheetHeight, {
       duration: ANIMATION_DURATION,
+      easing: EASING,
     });
     backdropOpacity.value = withTiming(
       0,
-      { duration: ANIMATION_DURATION },
+      { duration: ANIMATION_DURATION, easing: EASING },
       () => {
         runOnJS(onClose)();
       },

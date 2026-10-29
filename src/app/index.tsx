@@ -17,13 +17,16 @@ export default function WelcomeScreen() {
   return (
     <View
       className="flex-1 bg-white"
-      style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
+      style={{ paddingTop: insets.top }}
     >
       <View className="flex-1 items-center justify-center">
         <AppNameLogo width={180} height={40} />
       </View>
 
-      <View className="px-6 pb-6 w-full">
+      <View
+        className="px-6 w-full"
+        style={{ paddingBottom: Math.max(insets.bottom, 24) }}
+      >
         <AppButton
           variant="solid"
           size="lg"

@@ -9,10 +9,23 @@ import type {
 export type ButtonVariant = "solid" | "outline" | "ghost" | "stepper" | "icon";
 export type ButtonSize = "sm" | "md" | "lg";
 
+export type HapticFeedbackType =
+  | "error"
+  | "success"
+  | "warning"
+  | "heavy"
+  | "rigid"
+  | "hard"
+  | "medium"
+  | "light"
+  | "soft"
+  | "selection";
+
 export interface BaseProps {
   size?: ButtonSize;
   disabled?: boolean;
   loading?: boolean;
+  haptic?: HapticFeedbackType | boolean;
   className?: string;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;

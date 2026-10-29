@@ -15,10 +15,12 @@ import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetScrollView,
   useBottomSheetInternal,
+  useBottomSheetTimingConfigs,
 } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Keyboard, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Easing } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { OtpInput } from "react-native-otp-entry";
 import type { SignInStep, SignInBottomSheetProps } from "@/types";
@@ -69,6 +71,11 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
 
   const snapPoints = useMemo(() => ["65%", "92%"], []);
 
+  const animationConfigs = useBottomSheetTimingConfigs({
+    duration: 380,
+    easing: Easing.bezier(0.25, 1, 0.5, 1),
+  });
+
   useEffect(() => {
     const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
     const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
@@ -99,9 +106,11 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
         disappearsOnIndex={-1}
         appearsOnIndex={0}
         opacity={0.5}
+        pressBehavior="close"
+        animationConfigs={animationConfigs}
       />
     ),
-    [],
+    [animationConfigs],
   );
 
   const handleClose = () => {
@@ -209,16 +218,21 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
       index={-1}
       snapPoints={snapPoints}
       enablePanDownToClose
+      animationConfigs={animationConfigs}
+      animateOnMount
       onChange={handleSheetChange}
       backdropComponent={renderBackdrop}
       handleIndicatorStyle={{ display: "none" }}
-      backgroundStyle={{ borderTopLeftRadius: 28, borderTopRightRadius: 28 }}
+      backgroundStyle={{
+        backgroundColor: "#FFFFFF",
+        borderTopLeftRadius: 28,
+        borderTopRightRadius: 28,
+      }}
       keyboardBehavior="fillParent"
       keyboardBlurBehavior="restore"
       android_keyboardInputMode="adjustResize"
       enableBlurKeyboardOnGesture
       topInset={insets.top}
-      bottomInset={insets.bottom}
     >
       <BottomSheetScrollView
         ref={scrollRef}

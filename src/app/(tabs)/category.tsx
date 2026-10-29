@@ -1,6 +1,19 @@
-import React, { useCallback, useMemo, useState } from "react";
+import { FilterIcon, SortIcon } from "@/assets";
+import ProductRowCard from "@/components/ProductRowCard";
+import { AppButton, BackButton, SearchTextInput } from "@/components/ui";
+import {
+  CATALOGUE_SECTIONS,
+  ORDER_AGAIN_PRODUCTS,
+  STATIONERY_PRODUCTS,
+} from "@/constants/catalogue";
+import { useLoadingHaptics } from "@/hooks";
+import { colors } from "@/themes/colors";
+import type { Product } from "@/types";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  BackHandler,
   FlatList,
   Keyboard,
   Platform,
@@ -10,17 +23,6 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router, useLocalSearchParams } from "expo-router";
-import { AppButton, BackButton, SearchTextInput } from "@/components/ui";
-import { FilterIcon, SortIcon } from "@/assets";
-import {
-  CATALOGUE_SECTIONS,
-  ORDER_AGAIN_PRODUCTS,
-  STATIONERY_PRODUCTS,
-} from "@/constants/catalogue";
-import { colors } from "@/themes/colors";
-import type { Product } from "@/types";
-import ProductRowCard from "@/components/ProductRowCard";
 
 const PAGE_SIZE = 8;
 
@@ -32,6 +34,15 @@ export default function CategoryScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  // Trigger hard haptic vibration on lazy load start and complete
+  useLoadingHaptics(isLoadingMore, {
+    vibrateOnStart: true,
+    startType: "heavy",
+    vibrateOnComplete: true,
+    completeType: "heavy",
+  });
+
   const [prevFilterKey, setPrevFilterKey] = useState(
     `${categoryId}_${searchQuery}`,
   );
@@ -87,6 +98,30 @@ export default function CategoryScreen() {
     }, 500);
   }, [isLoadingMore, hasMore, filteredProducts.length]);
 
+  const handleBack = useCallback(() => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.navigate("/(tabs)/catalogue");
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        handleBack();
+        return true;
+      };
+
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress,
+      );
+
+      return () => subscription.remove();
+    }, [handleBack]),
+  );
+
   const handleProductPress = useCallback((product: Product) => {
     router.push({
       pathname: "/productdetails",
@@ -137,7 +172,7 @@ export default function CategoryScreen() {
         <View className="flex-1">
           {/* Top Header */}
           <View className="flex-row items-center justify-between px-4 py-2">
-            <BackButton />
+            <BackButton onPress={handleBack} />
 
             <Text className="font-dm-semibold text-xl text-black text-center flex-1 mx-2">
               {categoryName}
@@ -164,21 +199,19 @@ export default function CategoryScreen() {
               size="md"
               label="Sort"
               icon={<SortIcon width={16} height={16} stroke={colors.black} />}
-              onPress={() => {}}
+              onPress={() => { }}
             />
             <AppButton
               variant="icon"
               size="md"
               label="Filter"
               icon={<FilterIcon width={16} height={16} stroke={colors.black} />}
-              onPress={() => {}}
+              onPress={() => { }}
             />
           </View>
 
-          {/* Subtle Divider */}
           <View className="border-b border-border w-full" />
 
-          {/* Vertical Product List with Optimized Lazy Loading */}
           <FlatList
             data={displayedProducts}
             keyExtractor={keyExtractor}

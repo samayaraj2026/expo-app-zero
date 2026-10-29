@@ -2,6 +2,8 @@ import { useState } from "react";
 import { TouchableOpacity, Text, View, ActivityIndicator } from "react-native";
 import { Image } from "expo-image";
 import { MinusIcon, PlusIcon } from "@/assets";
+import { useLoadingHaptics } from "@/hooks";
+import { haptics } from "@/utils/haptics";
 import type {
   ButtonVariant,
   ButtonSize,
@@ -10,6 +12,7 @@ import type {
   IconButtonProps,
   StepperProps,
   AppButtonProps,
+  HapticFeedbackType,
 } from "@/types";
 
 export type {
@@ -20,6 +23,7 @@ export type {
   IconButtonProps,
   StepperProps,
   AppButtonProps,
+  HapticFeedbackType,
 };
 
 // ─── Size maps ────────────────────────────────────────────────────────────────
@@ -81,6 +85,7 @@ function StandardButton(props: SolidOutlineGhostProps) {
     onPress,
     disabled = false,
     loading = false,
+    haptic,
     leftIcon,
     rightIcon,
     fullWidth = false,
@@ -97,7 +102,6 @@ function StandardButton(props: SolidOutlineGhostProps) {
     ghost: "bg-transparent",
     secondary: "bg-secondary rounded-xl",
   };
-
   const textClass: Record<string, string> = {
     solid: "text-white",
     outline: "text-black",
@@ -108,12 +112,29 @@ function StandardButton(props: SolidOutlineGhostProps) {
   const imgSizeMap: Record<ButtonSize, number> = { sm: 28, md: 36, lg: 44 };
   const imgSize = imgSizeMap[size];
 
+  useLoadingHaptics(Boolean(loading), {
+    vibrateOnStart: true,
+    startType: "error",
+  });
+
   const opacity = disabled || loading ? "opacity-50" : "";
   const width = fullWidth ? "w-full" : "self-start";
 
+  const handlePress = () => {
+    if (disabled || loading) return;
+    if (haptic === false) {
+      // Disabled
+    } else if (typeof haptic === "string" && haptic in haptics) {
+      (haptics as any)[haptic]();
+    } else if (haptic === true || (label && /add/i.test(label))) {
+      haptics.error();
+    }
+    onPress?.();
+  };
+
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={handlePress}
       disabled={disabled || loading}
       activeOpacity={0.75}
       style={style}
@@ -158,12 +179,25 @@ function IconButton({
   onPress,
   size = "lg",
   disabled = false,
+  haptic,
   className = "",
   style,
 }: IconButtonProps) {
+  const handlePress = () => {
+    if (disabled) return;
+    if (haptic === false) {
+      // Disabled
+    } else if (typeof haptic === "string" && haptic in haptics) {
+      (haptics as any)[haptic]();
+    } else if (haptic === true || (label && /add/i.test(label))) {
+      haptics.error();
+    }
+    onPress();
+  };
+
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={handlePress}
       disabled={disabled}
       activeOpacity={0.75}
       style={style}
@@ -184,6 +218,7 @@ function StepperButton({
   max = 99,
   size = "md",
   disabled = false,
+  haptic,
   onValueChange,
   icon,
   label,
@@ -196,8 +231,22 @@ function StepperButton({
   );
   const count = isControlled ? controlledValue : internalCount;
 
+  const triggerHaptic = (isAdd: boolean) => {
+    if (haptic === false) return;
+    if (typeof haptic === "string" && haptic in haptics) {
+      (haptics as any)[haptic]();
+      return;
+    }
+    if (isAdd) {
+      haptics.error();
+    } else {
+      haptics.light();
+    }
+  };
+
   const update = (next: number) => {
     if (disabled || next < min || next > max) return;
+    triggerHaptic(next > count);
     if (!isControlled) {
       setInternalCount(next);
     }

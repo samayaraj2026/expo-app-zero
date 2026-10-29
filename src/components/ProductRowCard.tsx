@@ -2,6 +2,7 @@ import React, { memo, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Image } from "expo-image";
 import { AppButton } from "@/components/ui";
+import { haptics } from "@/utils/haptics";
 import type { ProductRowCardProps } from "@/types";
 
 const ProductRowCard = memo(function ProductRowCard({
@@ -18,6 +19,7 @@ const ProductRowCard = memo(function ProductRowCard({
   };
 
   const handleAdd = () => {
+    haptics.error();
     handleQuantityChange(quantity + 1);
   };
 
