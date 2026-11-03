@@ -38,3 +38,7 @@ export const selectActiveRequisition = (state: RootState) =>
 
 export const selectUserProfile = (state: RootState) => state.user.profile;
 
+export * from "./slices/cartSlice";
+export * from "./slices/requisitionSlice";
+export * from "./slices/userSlice";
+
