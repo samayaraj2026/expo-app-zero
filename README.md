@@ -1,56 +1,71 @@
-# Welcome to your Expo app 👋
+# ZeroQue Mobile Application
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+### Autonomous Enterprise Procurement, Provisioning & Supply Governance Client
 
-## Get started
+ZeroQue Mobile is an enterprise-grade React Native & Expo application providing mobile-first workflows for multi-tenant workspace procurement, requisition tracking, catalogue browsing, and AI-governed approvals.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## Architecture Overview
 
-2. Start the app
+The codebase is organized according to **Domain-Driven Feature Architecture** (`src/features/`) and **Atomic UI Primitives** (`src/components/ui/`):
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```text
+src/
+├── app/                  # Expo Router file-based route tree & screens
+│   ├── _layout.tsx       # Root layout, Redux Store Provider, Gestures
+│   ├── (tabs)/           # Floating bottom tab bar screens
+│   │   ├── _layout.tsx   # Glassmorphic floating tab bar
+│   │   ├── home.tsx      # Active requisitions dashboard & status progress
+│   │   ├── catalogue.tsx # Multi-supplier catalogue & categories
+│   │   ├── category.tsx  # Filtered category view
+│   │   ├── cart.tsx      # Requisition basket & line-item checkout
+│   │   └── profile.tsx   # User profile, cost centres, spending limits
+│   ├── productdetails.tsx# Product details & variant selector
+│   ├── supplierdetails.tsx# Supplier profile, reviews & catalogue
+│   └── requestscreen.tsx # Requisition status onboarding screen
+│
+├── features/             # Bounded Feature Domains (Domain-Driven Design)
+│   ├── auth/             # SignInBottomSheet, authentication bottom sheet
+│   ├── catalogue/        # ProductCard, ProductRowCard, ProductSection, VariantCard
+│   ├── suppliers/        # SupplierHeader, SupplierNavBar, SupplierProductCard, etc.
+│   ├── cart/             # Cart actions, state selectors, basket mutations
+│   └── requisitions/     # Requisition lifecycle, progress stages, status feeds
+│
+├── components/           # Atomic UI Primitives & Design System
+│   └── ui/               # AppButton, BackButton, FloatingTextInput, PasswordTextInput, SearchCartPill, SearchTextInput
+│
+├── store/                # Redux Toolkit Global State
+│   ├── slices/           # cartSlice, requisitionSlice, userSlice
+│   └── index.ts          # Root store, typed hooks (useAppDispatch, useAppSelector), selectors
+│
+├── themes/               # Semantic Design Tokens
+│   └── colors.ts         # Centralized palette (100% token compliance, 0 raw hex)
+│
+└── utils/                # Utility helpers (haptics, formatting)
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-### Other setup steps
+## Quality Invariants & Verification
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+- **TypeScript Strict Mode**: Zero compilation errors (`npx tsc --noEmit`)
+- **Lint & Code Hygiene**: Zero ESLint errors or warnings (`npx expo lint`)
+- **Strict Design Tokens**: 100% token compliance with `src/themes/colors.ts`, zero raw hex codes in code
+- **Haptics Standard**: Contextual haptic feedback (`light` on positive user interactions, `success` on requisition submission, `error` strictly on validation failure)
+- **Zero Commented-Out Code**: No dead or conversational narrative blocks
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+## Available Commands
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+# Typecheck
+npx tsc --noEmit
 
-## Join the community
+# Lint
+npx expo lint
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+# Start development server
+npx expo start
+```

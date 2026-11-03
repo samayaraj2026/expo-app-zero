@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Animated, type TextInput } from "react-native";
 import { colors } from "@/themes/colors";
 import type {
@@ -45,59 +45,78 @@ export function useFloatingTextInput({
     }).start();
   }, [isFloating, animatedValue]);
 
-  const handleFocus: NonNullable<UseFloatingTextInputReturn["handleFocus"]> = (
-    e,
-  ) => {
-    setIsFocused(true);
-    onFocus?.(e);
-  };
+  const handleFocus: NonNullable<UseFloatingTextInputReturn["handleFocus"]> =
+    useCallback(
+      (event) => {
+        setIsFocused(true);
+        onFocus?.(event);
+      },
+      [onFocus],
+    );
 
-  const handleBlur: NonNullable<UseFloatingTextInputReturn["handleBlur"]> = (
-    e,
-  ) => {
-    setIsFocused(false);
-    onBlur?.(e);
-  };
+  const handleBlur: NonNullable<UseFloatingTextInputReturn["handleBlur"]> =
+    useCallback(
+      (event) => {
+        setIsFocused(false);
+        onBlur?.(event);
+      },
+      [onBlur],
+    );
 
-  const handleChangeText = (newText: string) => {
-    if (controlledValue === undefined) {
-      setUncontrolledText(newText);
-    }
-    onChangeText?.(newText);
-  };
+  const handleChangeText = useCallback(
+    (newText: string) => {
+      if (controlledValue === undefined) {
+        setUncontrolledText(newText);
+      }
+      onChangeText?.(newText);
+    },
+    [controlledValue, onChangeText],
+  );
 
-  const handleContainerPress = () => {
+  const handleContainerPress = useCallback(() => {
     if (editable) {
       inputRef.current?.focus();
     }
-  };
+  }, [editable]);
 
   // Label position and typography interpolations
-  const labelTop = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [editable ? 18 : 9, 9],
-  });
+  const labelTop = useMemo(
+    () =>
+      animatedValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [editable ? 18 : 9, 9],
+      }),
+    [animatedValue, editable],
+  );
 
-  const labelFontSize = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [editable ? 16 : 12, 12],
-  });
+  const labelFontSize = useMemo(
+    () =>
+      animatedValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [editable ? 16 : 12, 12],
+      }),
+    [animatedValue, editable],
+  );
 
-  const labelColor = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [
-      editable ? colors.black : colors.black40,
-      editable ? colors.black70 : colors.black40,
-    ],
-  });
+  const labelColor = useMemo(
+    () =>
+      animatedValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: [
+          editable ? colors.black : colors.black40,
+          editable ? colors.black70 : colors.black40,
+        ],
+      }),
+    [animatedValue, editable],
+  );
 
   // Dynamic border color
-  const getBorderColor = (): string => {
+  const borderColor = useMemo((): string => {
     if (error) return colors.red;
     if (!editable) return colors.border;
     if (isFocused) return colors.border;
-    return "#e4e4e7";
-  };
+    return colors.zinc200;
+  }, [error, editable, isFocused]);
 
   return {
     inputRef,
@@ -112,6 +131,6 @@ export function useFloatingTextInput({
     labelTop,
     labelFontSize,
     labelColor,
-    borderColor: getBorderColor(),
+    borderColor,
   };
 }

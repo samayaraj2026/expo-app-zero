@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
+import { useAppSelector, selectCartTotalCount } from "@/store";
 import {
-  DEFAULT_CART_COUNT,
   TAB_BAR_BOTTOM_SPACING,
   TAB_BAR_MIN_BOTTOM,
 } from "@/constants/tabBar";
@@ -20,7 +20,7 @@ export function useFloatingTabBar({
   navigation,
   insets,
 }: CustomTabBarProps): FloatingTabBarHookResult {
-  const cartCount = DEFAULT_CART_COUNT;
+  const cartCount = useAppSelector(selectCartTotalCount);
 
   // Floating bottom spacing respecting device safe areas with clear breathing room
   const bottomPosition = useMemo(

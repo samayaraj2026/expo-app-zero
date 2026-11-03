@@ -1,4 +1,9 @@
-import React, { forwardRef, useRef, useImperativeHandle, useState } from "react";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import {
   View,
   TextInput,
@@ -16,7 +21,7 @@ export type { PasswordTextInputProps };
 /** Built-in Hidden / Slashed Eye icon matching VisibleIcon's exact stroke & geometry */
 export function DefaultHiddenEyeIcon({
   size = 20,
-  color = "#000000",
+  color = colors.black,
 }: {
   size?: number;
   color?: string;
@@ -109,18 +114,18 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
       controlledVisible !== undefined ? controlledVisible : internalVisible;
     const currentText = controlledValue !== undefined ? controlledValue : text;
 
-    const handleChangeText = (val: string) => {
+    const handleChangeText = (inputText: string) => {
       if (disablePaste) {
-        const insertedCount = getInsertedCharsCount(currentText, val);
+        const insertedCount = getInsertedCharsCount(currentText, inputText);
         if (insertedCount > 1) {
           onPasteAttempt?.();
           return;
         }
       }
       if (controlledValue === undefined) {
-        setText(val);
+        setText(inputText);
       }
-      onChangeText?.(val);
+      onChangeText?.(inputText);
     };
 
     const toggleVisibility = () => {
@@ -134,8 +139,8 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
     const getBorderColor = () => {
       if (error) return colors.red;
       if (!editable) return colors.border;
-      if (isFocused) return "#18181B";
-      return "#E4E4E7";
+      if (isFocused) return colors.darkText;
+      return colors.zinc200;
     };
 
     return (
@@ -159,7 +164,7 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
               borderRadius: 12,
               borderWidth: 1,
               borderColor: getBorderColor(),
-              backgroundColor: editable ? "#FFFFFF" : "#F4F4F5",
+              backgroundColor: editable ? colors.white : colors.surface,
               paddingHorizontal: 18,
               flexDirection: "row",
               alignItems: "center",
@@ -181,7 +186,7 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
             autoCapitalize="none"
             autoCorrect={false}
             textContentType="newPassword"
-            selectionColor="#18181B"
+            selectionColor={colors.darkText}
             contextMenuHidden={disablePaste ? true : restProps.contextMenuHidden}
             onFocus={(e: any) => {
               setIsFocused(true);
@@ -198,7 +203,7 @@ export const PasswordTextInput = forwardRef<TextInput, PasswordTextInputProps>(
                 height: "100%",
                 fontSize: 16,
                 fontFamily: "DMSans_400Regular",
-                color: editable ? "#09090B" : "#71717A",
+                color: editable ? colors.darkerText : colors.mutedText,
                 paddingVertical: 0,
               },
               inputStyle,

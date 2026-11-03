@@ -102,7 +102,7 @@ const FloatingTabBar = memo(function FloatingTabBar(props: CustomTabBarProps) {
           tint={TAB_BAR_BLUR_TINT}
           style={StyleSheet.absoluteFill}
         />
-        {/* Exact #FFFFFF 56% translucent overlay from design spec */}
+        {/* Translucent overlay from design spec */}
         <View
           style={[
             StyleSheet.absoluteFill,

@@ -1,15 +1,27 @@
-import AppButton from "@/components/ui/AppButton";
+import React, { useCallback } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { AppButton } from "@/components/ui";
+import { colors } from "@/themes/colors";
+
+const styles = StyleSheet.create({
+  cardShadow: {
+    shadowColor: colors.black,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 24,
+    elevation: 2,
+  },
+});
 
 export default function RequestStatusScreen() {
   const insets = useSafeAreaInsets();
 
-  const handleContinue = () => {
+  const handleContinue = useCallback(() => {
     router.replace("/(tabs)/home");
-  };
+  }, []);
 
   return (
     <View
@@ -31,17 +43,11 @@ export default function RequestStatusScreen() {
       </View>
 
       <View className="flex-1 justify-center items-center px-6 my-3 relative">
-        <View className="absolute w-[270px] h-[230px] rounded-[16px] border-[1.5px] border-[#E5E7EB] bg-white" />
+        <View className="absolute w-[270px] h-[230px] rounded-[16px] border-[1.5px] border-neutral200 bg-white" />
 
         <View
-          className="w-full max-w-[320px] bg-white rounded-[12px] py-5 px-5 border border-[#F4F4F5]"
-          style={{
-            shadowColor: "#000000",
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.08,
-            shadowRadius: 24,
-            elevation: 2,
-          }}
+          className="w-full max-w-[320px] bg-white rounded-[12px] py-5 px-5 border border-neutral100"
+          style={styles.cardShadow}
         >
           <Text className="font-dm-bold text-base text-black mb-3.5">
             Ergonomic office chair, premium
@@ -53,8 +59,8 @@ export default function RequestStatusScreen() {
             <View className="flex-1 h-1 rounded-sm bg-border" />
           </View>
 
-          <View className="self-start bg-[#FEF3C7] px-2.5 py-1 rounded-md">
-            <Text className="font-dm-medium text-xs text-[#92400E]">
+          <View className="self-start bg-amberBg px-2.5 py-1 rounded-md">
+            <Text className="font-dm-medium text-xs text-amberDark">
               Awaiting approval
             </Text>
           </View>

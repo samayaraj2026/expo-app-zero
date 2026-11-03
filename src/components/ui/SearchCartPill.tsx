@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 import {
   Insets,
   StyleProp,
@@ -11,6 +11,7 @@ import {
 import { router } from "expo-router";
 import { CartIcon, SearchIcon } from "@/assets";
 import { colors } from "@/themes/colors";
+import { useAppSelector, selectCartTotalCount } from "@/store";
 
 export interface SearchCartPillProps {
   onSearchPress?: () => void;
@@ -37,7 +38,7 @@ const DEFAULT_HIT_SLOP: Insets = { top: 8, bottom: 8, left: 8, right: 8 };
 const SearchCartPill = memo(function SearchCartPill({
   onSearchPress,
   onCartPress,
-  cartCount = 1,
+  cartCount: propCartCount,
   showCartBadge = true,
   style,
   className,
@@ -45,32 +46,35 @@ const SearchCartPill = memo(function SearchCartPill({
   hitSlop = DEFAULT_HIT_SLOP,
   searchIconWidth = 18,
   searchIconHeight = 18,
-  searchIconStroke = "#000000",
+  searchIconStroke = colors.black,
   cartIconWidth = 16,
   cartIconHeight = 18,
-  cartIconStroke = "#000000",
+  cartIconStroke = colors.black,
   testID,
   searchTestID,
   cartTestID,
 }: SearchCartPillProps) {
-  const handleSearchPress = () => {
+  const storeCartCount = useAppSelector(selectCartTotalCount);
+  const activeCartCount =
+    propCartCount !== undefined ? propCartCount : storeCartCount;
+  const handleSearchPress = useCallback(() => {
     if (onSearchPress) {
       onSearchPress();
     } else {
       router.push("/(tabs)/catalogue");
     }
-  };
+  }, [onSearchPress]);
 
-  const handleCartPress = () => {
+  const handleCartPress = useCallback(() => {
     if (onCartPress) {
       onCartPress();
     } else {
       router.push("/(tabs)/cart");
     }
-  };
+  }, [onCartPress]);
 
   const shouldShowBadge =
-    showCartBadge && (cartCount === undefined || cartCount > 0);
+    showCartBadge && (activeCartCount === undefined || activeCartCount > 0);
 
   return (
     <View
@@ -105,7 +109,7 @@ const SearchCartPill = memo(function SearchCartPill({
         />
         {shouldShowBadge && (
           <View style={styles.cartBadge}>
-            <Text style={styles.cartBadgeText}>{cartCount}</Text>
+            <Text style={styles.cartBadgeText}>{activeCartCount}</Text>
           </View>
         )}
       </TouchableOpacity>
@@ -139,7 +143,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -6,
     right: -8,
-    backgroundColor: "#EF4444",
+    backgroundColor: colors.red,
     width: 16,
     height: 16,
     borderRadius: 8,
@@ -147,7 +151,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   cartBadgeText: {
-    color: "#FFFFFF",
+    color: colors.white,
     fontSize: 10,
     fontFamily: "DMSans_700Bold",
     lineHeight: 12,

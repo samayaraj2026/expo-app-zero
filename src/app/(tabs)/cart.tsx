@@ -1,20 +1,51 @@
-import React from "react";
-import { Text, View } from "react-native";
+import React, { useCallback, useMemo } from "react";
+import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
+import { CartIcon } from "@/assets";
+import { EmptyStateBackdropBlob, SetupEmptyState } from "@/components/ui";
+import { colors } from "@/themes/colors";
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.surface,
+  },
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+    paddingBottom: 80,
+  },
+});
 
 export default function CartScreen() {
+  const handleBrowseCatalogue = useCallback(() => {
+    router.push("/(tabs)/catalogue");
+  }, []);
+
+  const emptyStateAction = useMemo(
+    () => ({
+      label: "+ Browse Catalogue",
+      onClick: handleBrowseCatalogue,
+    }),
+    [handleBrowseCatalogue],
+  );
+
   return (
-    <SafeAreaView
-      className="flex-1 bg-slate-50"
-      edges={["top", "left", "right"]}
-    >
-      <View className="flex-1 items-center justify-center px-6">
-        <Text className="font-dm-bold text-[22px] text-slate-900 mb-2">
-          Cart Screen
-        </Text>
-        <Text className="font-dm-regular text-[15px] text-slate-500">
-          This is the Cart Screen
-        </Text>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+      <View style={styles.container}>
+        <SetupEmptyState
+          illustration={
+            <EmptyStateBackdropBlob>
+              <CartIcon width={56} height={56} stroke={colors.primary} />
+            </EmptyStateBackdropBlob>
+          }
+          title="Your Basket is Empty"
+          description="Explore our enterprise catalogue to add products, request supplies, and submit for approval."
+          action={emptyStateAction}
+        />
       </View>
     </SafeAreaView>
   );

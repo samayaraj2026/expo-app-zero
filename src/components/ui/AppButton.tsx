@@ -1,18 +1,19 @@
-import { useState } from "react";
-import { TouchableOpacity, Text, View, ActivityIndicator } from "react-native";
+import React, { memo, useCallback, useState } from "react";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { Image } from "expo-image";
 import { MinusIcon, PlusIcon } from "@/assets";
 import { useLoadingHaptics } from "@/hooks";
 import { haptics } from "@/utils/haptics";
+import { colors } from "@/themes/colors";
 import type {
-  ButtonVariant,
-  ButtonSize,
-  BaseProps,
-  SolidOutlineGhostProps,
-  IconButtonProps,
-  StepperProps,
   AppButtonProps,
+  BaseProps,
+  ButtonSize,
+  ButtonVariant,
   HapticFeedbackType,
+  IconButtonProps,
+  SolidOutlineGhostProps,
+  StepperProps,
 } from "@/types";
 
 export type {
@@ -26,21 +27,39 @@ export type {
   HapticFeedbackType,
 };
 
-// ─── Size maps ────────────────────────────────────────────────────────────────
-
-const paddingMap: Record<ButtonSize, string> = {
+const PADDING_CLASS_MAP: Record<ButtonSize, string> = {
   sm: "px-3 py-1.5",
   md: "px-3.5 py-2",
   lg: "px-4 py-4",
 };
 
-const textSizeMap: Record<ButtonSize, string> = {
+const TEXT_SIZE_CLASS_MAP: Record<ButtonSize, string> = {
   sm: "text-xs",
   md: "text-[15px]",
   lg: "text-base",
 };
 
-const stepperSizeMap: Record<
+const VARIANT_CLASS_MAP: Record<string, string> = {
+  solid: "bg-primary rounded-xl",
+  outline: "border border-border rounded-2xl bg-white",
+  ghost: "bg-transparent",
+  secondary: "bg-secondary rounded-xl",
+};
+
+const TEXT_COLOR_CLASS_MAP: Record<string, string> = {
+  solid: "text-white",
+  outline: "text-black",
+  ghost: "text-black",
+  secondary: "text-blue",
+};
+
+const IMAGE_SIZE_MAP: Record<ButtonSize, number> = {
+  sm: 28,
+  md: 36,
+  lg: 44,
+};
+
+const STEPPER_SIZE_MAP: Record<
   ButtonSize,
   {
     circleBtn: string;
@@ -77,7 +96,9 @@ const stepperSizeMap: Record<
   },
 };
 
-function StandardButton(props: SolidOutlineGhostProps) {
+const StandardButton = memo(function StandardButton(
+  props: SolidOutlineGhostProps,
+) {
   const {
     variant = "solid",
     size = "md",
@@ -96,41 +117,27 @@ function StandardButton(props: SolidOutlineGhostProps) {
     textClassName,
   } = props;
 
-  const variantClass: Record<string, string> = {
-    solid: "bg-primary rounded-xl",
-    outline: "border border-border rounded-2xl bg-white",
-    ghost: "bg-transparent",
-    secondary: "bg-secondary rounded-xl",
-  };
-  const textClass: Record<string, string> = {
-    solid: "text-white",
-    outline: "text-black",
-    ghost: "text-black",
-    secondary: "text-blue",
-  };
-
-  const imgSizeMap: Record<ButtonSize, number> = { sm: 28, md: 36, lg: 44 };
-  const imgSize = imgSizeMap[size];
+  const imageSize = IMAGE_SIZE_MAP[size];
 
   useLoadingHaptics(Boolean(loading), {
     vibrateOnStart: true,
-    startType: "error",
+    startType: "light",
   });
 
-  const opacity = disabled || loading ? "opacity-50" : "";
-  const width = fullWidth ? "w-full" : "self-start";
+  const opacityClass = disabled || loading ? "opacity-50" : "";
+  const widthClass = fullWidth ? "w-full" : "self-start";
 
-  const handlePress = () => {
+  const handlePress = useCallback(() => {
     if (disabled || loading) return;
     if (haptic === false) {
-      // Disabled
+      // Disabled haptics
     } else if (typeof haptic === "string" && haptic in haptics) {
       (haptics as any)[haptic]();
     } else if (haptic === true || (label && /add/i.test(label))) {
-      haptics.error();
+      haptics.light();
     }
     onPress?.();
-  };
+  }, [disabled, loading, haptic, label, onPress]);
 
   return (
     <TouchableOpacity
@@ -138,44 +145,51 @@ function StandardButton(props: SolidOutlineGhostProps) {
       disabled={disabled || loading}
       activeOpacity={0.75}
       style={style}
-      className={`flex-row items-center justify-center ${variantClass[variant]} ${paddingMap[size]} ${opacity} ${width} ${className}`}
+      className={`flex-row items-center justify-center ${PADDING_CLASS_MAP[size]} ${VARIANT_CLASS_MAP[variant]} ${opacityClass} ${widthClass} ${className}`}
     >
       {loading ? (
         <ActivityIndicator
           size="small"
-          color={variant === "solid" ? "#FFFFFF" : "#162456"}
+          color={variant === "solid" ? colors.white : colors.primary}
         />
       ) : (
         <>
           {image && (
             <View
-              className="rounded-full overflow-hidden bg-surface mr-3"
-              style={{ width: imgSize, height: imgSize }}
+              style={{
+                width: imageSize,
+                height: imageSize,
+                borderRadius: imageSize / 2,
+              }}
+              className="overflow-hidden mr-2 bg-surface items-center justify-center shrink-0"
             >
               <Image
                 source={image}
-                style={{ width: imgSize, height: imgSize }}
+                style={{ width: "100%", height: "100%" }}
                 contentFit="cover"
               />
             </View>
           )}
-          {!image && leftIcon && <View className="mr-2">{leftIcon}</View>}
+
+          {leftIcon && <View className="mr-1.5">{leftIcon}</View>}
+
           <Text
             style={textStyle}
-            className={`font-dm-semibold ${textSizeMap[size]} ${textClassName || textClass[variant]}`}
+            className={`font-dm-semibold ${TEXT_SIZE_CLASS_MAP[size]} ${TEXT_COLOR_CLASS_MAP[variant]} ${textClassName ?? ""}`}
           >
             {label}
           </Text>
-          {rightIcon && <View className="ml-2">{rightIcon}</View>}
+
+          {rightIcon && <View className="ml-1.5">{rightIcon}</View>}
         </>
       )}
     </TouchableOpacity>
   );
-}
+});
 
-function IconButton({
-  label,
+const IconButton = memo(function IconButton({
   icon,
+  label,
   onPress,
   size = "lg",
   disabled = false,
@@ -183,17 +197,17 @@ function IconButton({
   className = "",
   style,
 }: IconButtonProps) {
-  const handlePress = () => {
+  const handlePress = useCallback(() => {
     if (disabled) return;
     if (haptic === false) {
-      // Disabled
+      // Disabled haptics
     } else if (typeof haptic === "string" && haptic in haptics) {
       (haptics as any)[haptic]();
     } else if (haptic === true || (label && /add/i.test(label))) {
-      haptics.error();
+      haptics.light();
     }
     onPress();
-  };
+  }, [disabled, haptic, label, onPress]);
 
   return (
     <TouchableOpacity
@@ -204,14 +218,14 @@ function IconButton({
       className={`flex-row items-center justify-center gap-1.5 border border-gray/40 rounded-xl w-[88px] h-[42px] ${disabled ? "opacity-50" : ""} ${className}`}
     >
       {icon}
-      <Text className={`font-dm-medium text-black ${textSizeMap[size]}`}>
+      <Text className={`font-dm-medium text-black ${TEXT_SIZE_CLASS_MAP[size]}`}>
         {label}
       </Text>
     </TouchableOpacity>
   );
-}
+});
 
-function StepperButton({
+const StepperButton = memo(function StepperButton({
   value: controlledValue,
   initialValue,
   min = 0,
@@ -231,41 +245,47 @@ function StepperButton({
   );
   const count = isControlled ? controlledValue : internalCount;
 
-  const triggerHaptic = (isAdd: boolean) => {
-    if (haptic === false) return;
-    if (typeof haptic === "string" && haptic in haptics) {
-      (haptics as any)[haptic]();
-      return;
-    }
-    if (isAdd) {
-      haptics.error();
-    } else {
-      haptics.light();
-    }
-  };
+  const triggerHapticFeedback = useCallback(
+    (isAdd: boolean) => {
+      if (haptic === false) return;
+      if (typeof haptic === "string" && haptic in haptics) {
+        (haptics as any)[haptic]();
+        return;
+      }
+      if (isAdd) {
+        haptics.light();
+      } else {
+        haptics.light();
+      }
+    },
+    [haptic],
+  );
 
-  const update = (next: number) => {
-    if (disabled || next < min || next > max) return;
-    triggerHaptic(next > count);
-    if (!isControlled) {
-      setInternalCount(next);
-    }
-    onValueChange?.(next);
-  };
+  const handleQuantityUpdate = useCallback(
+    (nextCount: number) => {
+      if (disabled || nextCount < min || nextCount > max) return;
+      triggerHapticFeedback(nextCount > count);
+      if (!isControlled) {
+        setInternalCount(nextCount);
+      }
+      onValueChange?.(nextCount);
+    },
+    [disabled, min, max, count, triggerHapticFeedback, isControlled, onValueChange],
+  );
 
-  const s = stepperSizeMap[size];
-  const opacity = disabled ? "opacity-50" : "";
+  const stepperLayout = STEPPER_SIZE_MAP[size];
+  const opacityClass = disabled ? "opacity-50" : "";
 
   // Flow: when count is 0, show label button (if provided) or '+' circle button
   if (count <= 0) {
     if (label) {
       return (
         <TouchableOpacity
-          onPress={() => update(Math.max(1, min))}
+          onPress={() => handleQuantityUpdate(Math.max(1, min))}
           disabled={disabled || 1 > max}
           activeOpacity={0.75}
           style={style}
-          className={`flex-row items-center justify-center bg-primary rounded-xl ${opacity} ${className}`}
+          className={`flex-row items-center justify-center bg-primary rounded-xl ${opacityClass} ${className}`}
         >
           <Text className="font-dm-semibold text-[14px] text-white text-center">
             {label}
@@ -276,17 +296,21 @@ function StepperButton({
 
     return (
       <TouchableOpacity
-        onPress={() => update(Math.max(1, min))}
+        onPress={() => handleQuantityUpdate(Math.max(1, min))}
         disabled={disabled || 1 > max}
         activeOpacity={0.7}
         hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
         style={style}
-        className={`items-center justify-center bg-primary rounded-full ${s.circleBtn} ${opacity} ${className}`}
+        className={`items-center justify-center bg-primary rounded-full ${stepperLayout.circleBtn} ${opacityClass} ${className}`}
       >
         {icon ? (
           icon
         ) : (
-          <PlusIcon width={s.iconSize} height={s.iconSize} stroke="#FFFFFF" />
+          <PlusIcon
+            width={stepperLayout.iconSize}
+            height={stepperLayout.iconSize}
+            stroke={colors.white}
+          />
         )}
       </TouchableOpacity>
     );
@@ -295,16 +319,20 @@ function StepperButton({
   return (
     <View
       style={style}
-      className={`flex-row items-center bg-primary rounded-full overflow-hidden ${s.container} ${opacity} ${className}`}
+      className={`flex-row items-center bg-primary rounded-full overflow-hidden ${stepperLayout.container} ${opacityClass} ${className}`}
     >
       <TouchableOpacity
-        onPress={() => update(count - 1)}
+        onPress={() => handleQuantityUpdate(count - 1)}
         disabled={disabled || count - 1 < min}
         activeOpacity={0.7}
         hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-        className={`${s.stepBtn} items-center justify-center`}
+        className={`${stepperLayout.stepBtn} items-center justify-center`}
       >
-        <MinusIcon width={s.iconSize} height={s.iconSize} stroke="#FFFFFF" />
+        <MinusIcon
+          width={stepperLayout.iconSize}
+          height={stepperLayout.iconSize}
+          stroke={colors.white}
+        />
       </TouchableOpacity>
 
       <Text
@@ -312,30 +340,36 @@ function StepperButton({
           fontFamily: "DMSans_600SemiBold",
           fontSize: 16,
           lineHeight: 20,
-          color: "#FFFFFF",
+          color: colors.white,
           includeFontPadding: false,
           textAlignVertical: "center",
         }}
-        className={`text-white font-dm-semibold text-[16px] leading-[20px] text-center ${s.num}`}
+        className={`text-white font-dm-semibold text-[16px] leading-[20px] text-center ${stepperLayout.num}`}
       >
         {count}
       </Text>
 
       <TouchableOpacity
-        onPress={() => update(count + 1)}
+        onPress={() => handleQuantityUpdate(count + 1)}
         disabled={disabled || count >= max}
         activeOpacity={0.7}
         hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-        className={`${s.stepBtn} items-center justify-center`}
+        className={`${stepperLayout.stepBtn} items-center justify-center`}
       >
-        <PlusIcon width={s.iconSize} height={s.iconSize} stroke="#FFFFFF" />
+        <PlusIcon
+          width={stepperLayout.iconSize}
+          height={stepperLayout.iconSize}
+          stroke={colors.white}
+        />
       </TouchableOpacity>
     </View>
   );
-}
+});
 
-export default function AppButton(props: AppButtonProps) {
+const AppButton = memo(function AppButton(props: AppButtonProps) {
   if (props.variant === "stepper") return <StepperButton {...props} />;
   if (props.variant === "icon") return <IconButton {...props} />;
   return <StandardButton {...(props as SolidOutlineGhostProps)} />;
-}
+});
+
+export default AppButton;

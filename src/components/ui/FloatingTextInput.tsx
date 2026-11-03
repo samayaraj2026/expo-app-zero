@@ -134,7 +134,7 @@ export const FloatingTextInput = forwardRef<TextInput, FloatingTextInputProps>(
                 includeFontPadding: false,
                 fontSize: editable ? 16 : 14,
                 fontFamily: editable ? "DMSans_400Regular" : "DMSans_500Medium",
-                color: editable ? "#09090b" : colors.black40,
+                color: editable ? colors.darkerText : colors.black40,
                 height: "100%",
               },
               inputStyle,

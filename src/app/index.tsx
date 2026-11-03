@@ -1,18 +1,18 @@
-import { AppNameLogo } from "@/assets";
-import SignInBottomSheet from "@/components/SignInBottomSheet";
-import AppButton from "@/components/ui/AppButton";
-import BottomSheet from "@gorhom/bottom-sheet";
-import { useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import { Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { AppNameLogo } from "@/assets";
+import { SignInBottomSheet } from "@/features/auth";
+import { AppButton } from "@/components/ui";
 
 export default function WelcomeScreen() {
   const insets = useSafeAreaInsets();
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  const openSignIn = () => {
+  const openSignIn = useCallback(() => {
     bottomSheetRef.current?.expand();
-  };
+  }, []);
 
   return (
     <View
@@ -35,13 +35,13 @@ export default function WelcomeScreen() {
           onPress={openSignIn}
         />
 
-        <Text className="text-center text-xs font-dm-regular text-black/70 mt-4 leading-5">
+        <Text className="text-center text-xs font-dm-regular text-black70 mt-4 leading-5">
           By proceeding to use ZeroQue, you agree to our{" "}
-          <Text className="underline decoration-black/70 font-dm-regular text-black/70">
+          <Text className="underline decoration-black70 font-dm-regular text-black70">
             terms of service
           </Text>
           {"\n"}and{" "}
-          <Text className="underline decoration-black/70 font-dm-regular text-black/70">
+          <Text className="underline decoration-black70 font-dm-regular text-black70">
             privacy policy
           </Text>
         </Text>

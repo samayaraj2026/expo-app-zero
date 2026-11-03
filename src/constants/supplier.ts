@@ -149,8 +149,8 @@ export function getSupplierDetails(supplierName?: string): SupplierDetailsData {
     ...DEFAULT_SUPPLIER,
     id: supplierName.toLowerCase().replace(/\s+/g, "-"),
     name: supplierName,
-    products: DEFAULT_SUPPLIER.products.map((p) => ({
-      ...p,
+    products: DEFAULT_SUPPLIER.products.map((product) => ({
+      ...product,
       supplier: supplierName,
     })),
   };

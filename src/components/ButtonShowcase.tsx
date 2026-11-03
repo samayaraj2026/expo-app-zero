@@ -144,13 +144,13 @@ export default function ButtonShowcase() {
                 image: require("../../assets/images/react-logo.png"),
               },
             ] as const
-          ).map((cat) => (
+          ).map((category) => (
             <AppButton
-              key={cat.label}
+              key={category.label}
               variant="outline"
               size="sm"
-              label={cat.label}
-              image={cat.image}
+              label={category.label}
+              image={category.image}
               onPress={() => {}}
             />
           ))}

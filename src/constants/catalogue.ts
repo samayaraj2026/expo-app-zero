@@ -1370,8 +1370,8 @@ export function getProductDetails(productId?: string): ProductDetailsData {
   if (!productId) return DEFAULT_PRODUCT_DETAILS;
 
   // Search through all sections to see if product exists
-  const allProducts = CATALOGUE_SECTIONS.flatMap((s) => s.products);
-  const found = allProducts.find((p) => p.id === productId);
+  const allProducts = CATALOGUE_SECTIONS.flatMap((section) => section.products);
+  const found = allProducts.find((product) => product.id === productId);
 
   if (!found) return DEFAULT_PRODUCT_DETAILS;
 

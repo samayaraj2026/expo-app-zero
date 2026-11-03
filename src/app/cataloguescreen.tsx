@@ -1,32 +1,50 @@
-import { useEffect, useRef, useState } from "react";
-import AppButton from "@/components/ui/AppButton";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
+import {
+  Animated,
+  Easing,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Image } from "expo-image";
+import { router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { AppButton } from "@/components/ui";
 import {
   CARD_CLASS,
   CATALOGUE_COLUMNS,
   CATALOGUE_IMAGE_SETS,
 } from "@/constants";
-import { Image } from "expo-image";
-import { router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import {
-  Animated,
-  Easing,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-function CatalogueCard({
-  index,
-  setIndex,
-}: {
-  index: number;
-  setIndex: number;
-}) {
-  const [layerAUri, setLayerAUri] = useState(CATALOGUE_IMAGE_SETS[0][index]);
+const styles = StyleSheet.create({
+  fullImage: {
+    width: "100%",
+    height: "100%",
+  },
+  skipHitSlop: {
+    top: 10,
+    bottom: 10,
+    left: 10,
+    right: 10,
+  },
+});
+
+interface CatalogueCardProps {
+  cardIndex: number;
+  activeSetIndex: number;
+}
+
+const CatalogueCard = memo(function CatalogueCard({
+  cardIndex,
+  activeSetIndex,
+}: CatalogueCardProps) {
+  const [layerAUri, setLayerAUri] = useState(
+    CATALOGUE_IMAGE_SETS[0][cardIndex],
+  );
   const [layerBUri, setLayerBUri] = useState(
-    CATALOGUE_IMAGE_SETS[1 % CATALOGUE_IMAGE_SETS.length][index]
+    CATALOGUE_IMAGE_SETS[1 % CATALOGUE_IMAGE_SETS.length][cardIndex],
   );
   const [topLayer, setTopLayer] = useState<"A" | "B">("A");
 
@@ -39,19 +57,18 @@ function CatalogueCard({
   useEffect(() => {
     if (isFirstMount.current) {
       isFirstMount.current = false;
-      // Staggered intro animation for initial set (Set 1)
-      const anim = Animated.timing(animA, {
+      const introAnimation = Animated.timing(animA, {
         toValue: 1,
         duration: 350,
-        delay: index * 160,
+        delay: cardIndex * 160,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       });
-      anim.start();
-      return () => anim.stop();
+      introAnimation.start();
+      return () => introAnimation.stop();
     }
 
-    const nextUri = CATALOGUE_IMAGE_SETS[setIndex][index];
+    const nextUri = CATALOGUE_IMAGE_SETS[activeSetIndex][cardIndex];
 
     if (activeLayerRef.current === "A") {
       activeLayerRef.current = "B";
@@ -59,44 +76,44 @@ function CatalogueCard({
       setTopLayer("B");
       animB.setValue(0);
 
-      const anim = Animated.timing(animB, {
+      const animation = Animated.timing(animB, {
         toValue: 1,
         duration: 350,
-        delay: index * 160,
+        delay: cardIndex * 160,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       });
 
-      anim.start(({ finished }) => {
+      animation.start(({ finished }) => {
         if (finished) {
           animA.setValue(0);
         }
       });
 
-      return () => anim.stop();
+      return () => animation.stop();
     } else {
       activeLayerRef.current = "A";
       setLayerAUri(nextUri);
       setTopLayer("A");
       animA.setValue(0);
 
-      const anim = Animated.timing(animA, {
+      const animation = Animated.timing(animA, {
         toValue: 1,
         duration: 350,
-        delay: index * 160,
+        delay: cardIndex * 160,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       });
 
-      anim.start(({ finished }) => {
+      animation.start(({ finished }) => {
         if (finished) {
           animB.setValue(0);
         }
       });
 
-      return () => anim.stop();
+      return () => animation.stop();
     }
-  }, [setIndex, index, animA, animB]);
+  }, [activeSetIndex, cardIndex, animA, animB]);
 
   const scaleA = animA.interpolate({
     inputRange: [0, 1],
@@ -124,7 +141,7 @@ function CatalogueCard({
       >
         <Image
           source={{ uri: layerAUri }}
-          style={{ width: "100%", height: "100%" }}
+          style={styles.fullImage}
           contentFit="cover"
           transition={0}
           cachePolicy="memory-disk"
@@ -145,7 +162,7 @@ function CatalogueCard({
       >
         <Image
           source={{ uri: layerBUri }}
-          style={{ width: "100%", height: "100%" }}
+          style={styles.fullImage}
           contentFit="cover"
           transition={0}
           cachePolicy="memory-disk"
@@ -153,62 +170,63 @@ function CatalogueCard({
       </Animated.View>
     </View>
   );
-}
+});
 
-function CatalogueColumn({
-  marginTop,
-  startIndex,
-  count,
-  setIndex,
-}: {
+interface CatalogueColumnProps {
   marginTop: number;
   startIndex: number;
   count: number;
-  setIndex: number;
-}) {
+  activeSetIndex: number;
+}
+
+const CatalogueColumn = memo(function CatalogueColumn({
+  marginTop,
+  startIndex,
+  count,
+  activeSetIndex,
+}: CatalogueColumnProps) {
   return (
     <View className="items-center gap-3" style={{ marginTop }}>
-      {Array.from({ length: count }, (_, i) => {
-        const globalIndex = startIndex + i;
+      {Array.from({ length: count }, (_, itemIndex) => {
+        const globalIndex = startIndex + itemIndex;
         return (
           <CatalogueCard
             key={globalIndex}
-            index={globalIndex}
-            setIndex={setIndex}
+            cardIndex={globalIndex}
+            activeSetIndex={activeSetIndex}
           />
         );
       })}
     </View>
   );
-}
+});
 
 export default function CatalogueIntroScreen() {
   const insets = useSafeAreaInsets();
   const [activeSetIndex, setActiveSetIndex] = useState(0);
 
   useEffect(() => {
-    // Pre-cache all images on mount for instantaneous, flicker-free rendering
-    CATALOGUE_IMAGE_SETS.forEach((set) => {
-      set.forEach((url) => {
-        Image.prefetch(url);
+    // Pre-cache all images on mount for instantaneous rendering
+    CATALOGUE_IMAGE_SETS.forEach((imageSet) => {
+      imageSet.forEach((imageUrl) => {
+        Image.prefetch(imageUrl);
       });
     });
 
-    // 11 cards * 160ms = 1600ms stagger + 350ms duration = 1950ms animation + 2250ms hold = 4200ms per cycle
-    const interval = setInterval(() => {
-      setActiveSetIndex((prev) => (prev + 1) % CATALOGUE_IMAGE_SETS.length);
+    const intervalTimer = setInterval(() => {
+      setActiveSetIndex((previousSet) => (previousSet + 1) % CATALOGUE_IMAGE_SETS.length);
     }, 4200);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(intervalTimer);
   }, []);
 
-  const handleSkip = () => {
+  const handleSkip = useCallback(() => {
     router.replace("/(tabs)/home");
-  };
+  }, []);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     router.push("/requestscreen");
-  };
+  }, []);
 
   return (
     <View
@@ -225,12 +243,7 @@ export default function CatalogueIntroScreen() {
         <TouchableOpacity
           onPress={handleSkip}
           activeOpacity={0.7}
-          hitSlop={{
-            top: 10,
-            bottom: 10,
-            left: 10,
-            right: 10,
-          }}
+          hitSlop={styles.skipHitSlop}
         >
           <Text className="font-dm-medium text-base text-black">Skip</Text>
         </TouchableOpacity>
@@ -254,7 +267,7 @@ export default function CatalogueIntroScreen() {
             marginTop={column.marginTop}
             startIndex={column.startIndex}
             count={column.count}
-            setIndex={activeSetIndex}
+            activeSetIndex={activeSetIndex}
           />
         ))}
       </View>

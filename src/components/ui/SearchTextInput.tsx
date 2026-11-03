@@ -46,11 +46,11 @@ export const SearchTextInput = forwardRef<TextInput, SearchTextInputProps>(
     const currentText = controlledValue !== undefined ? controlledValue : text;
     const hasText = currentText.length > 0;
 
-    const handleChangeText = (val: string) => {
+    const handleChangeText = (inputText: string) => {
       if (controlledValue === undefined) {
-        setText(val);
+        setText(inputText);
       }
-      onChangeText?.(val);
+      onChangeText?.(inputText);
     };
 
     const handleClear = () => {
@@ -158,7 +158,7 @@ export const SearchTextInput = forwardRef<TextInput, SearchTextInputProps>(
           editable={editable}
           placeholder={placeholder}
           placeholderTextColor={colors.black70}
-          selectionColor="#18181B"
+          selectionColor={colors.darkText}
           returnKeyType="search"
           onFocus={(e) => {
             setIsFocused(true);
@@ -175,7 +175,7 @@ export const SearchTextInput = forwardRef<TextInput, SearchTextInputProps>(
               height: "100%",
               fontSize: 16,
               fontFamily: "DMSans_400Regular",
-              // color: editable ? "#18181B" : "#A1A1AA",
+              color: editable ? colors.darkText : colors.neutral400,
               paddingVertical: 0,
             },
             inputStyle,

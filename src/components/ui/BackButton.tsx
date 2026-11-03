@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { router } from "expo-router";
 import { BackIcon } from "@/assets";
@@ -14,17 +14,16 @@ const BackButton = memo(function BackButton({
   testID,
   iconWidth = 9,
   iconHeight = 16,
-  strokeColor = "#000000",
+  strokeColor = colors.black,
   strokeWidth = 2,
 }: BackButtonProps) {
-  const handlePress = () => {
+  const handlePress = useCallback(() => {
     if (onPress) {
       onPress();
-    } else {
-      if (router.canGoBack())
-        router.back();
+    } else if (router.canGoBack()) {
+      router.back();
     }
-  };
+  }, [onPress]);
 
   return (
     <TouchableOpacity
@@ -55,7 +54,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     alignItems: "center",
     justifyContent: "center",
-    // Exact drop shadow from design spec: box-shadow: 0px 8px 32px 0px rgba(0, 0, 0, 0.12);
     boxShadow: "0px 8px 32px 0px rgba(0, 0, 0, 0.12)",
     shadowColor: colors.semi_transparent_white,
     shadowOffset: { width: 0, height: 8 },
