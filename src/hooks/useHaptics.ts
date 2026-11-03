@@ -34,6 +34,15 @@ export interface LoadingHapticsOptions {
     | "error"
     | "selection"
     | "light";
+  /**
+   * Whether to maintain a continuous rhythmic pulse for the entire duration of loading.
+   * Defaults to false.
+   */
+  pulseDuringLoading?: boolean;
+  /**
+   * Interval for continuous pulse during loading in milliseconds. Defaults to 280ms.
+   */
+  pulseIntervalMs?: number;
 }
 
 /**
@@ -49,6 +58,8 @@ export function useLoadingHaptics(
     startType = "heavy",
     vibrateOnComplete = false,
     completeType = "heavy",
+    pulseDuringLoading = false,
+    pulseIntervalMs = 280,
   } = options || {};
 
   const prevLoadingRef = useRef<boolean>(isLoading);
@@ -58,27 +69,46 @@ export function useLoadingHaptics(
     prevLoadingRef.current = isLoading;
 
     // Started loading
-    if (!wasLoading && isLoading && vibrateOnStart) {
-      if (startType === "error") haptics.error();
-      else if (startType === "success") haptics.success();
-      else if (startType === "heavy" || startType === "hard") haptics.heavy();
-      else if (startType === "rigid") haptics.rigid();
-      else if (startType === "medium") haptics.medium();
-      else if (startType === "light") haptics.light();
-      else if (startType === "soft") haptics.soft();
-      else if (startType === "selection") haptics.selection();
+    if (!wasLoading && isLoading) {
+      if (pulseDuringLoading) {
+        haptics.startLoadingPulse(pulseIntervalMs);
+      } else if (vibrateOnStart) {
+        if (startType === "error") haptics.error();
+        else if (startType === "success") haptics.success();
+        else if (startType === "heavy" || startType === "hard") haptics.heavy();
+        else if (startType === "rigid") haptics.rigid();
+        else if (startType === "medium") haptics.medium();
+        else if (startType === "light") haptics.light();
+        else if (startType === "soft") haptics.soft();
+        else if (startType === "selection") haptics.selection();
+      }
     }
 
     // Finished loading
-    if (wasLoading && !isLoading && vibrateOnComplete) {
-      if (completeType === "error") haptics.error();
-      else if (completeType === "heavy" || completeType === "hard") haptics.heavy();
-      else if (completeType === "rigid") haptics.rigid();
-      else if (completeType === "success") haptics.success();
-      else if (completeType === "selection") haptics.selection();
-      else if (completeType === "light") haptics.light();
+    if (wasLoading && !isLoading) {
+      if (pulseDuringLoading) {
+        haptics.stopLoadingPulse();
+      }
+
+      if (vibrateOnComplete) {
+        if (completeType === "error") haptics.error();
+        else if (completeType === "heavy" || completeType === "hard") haptics.heavy();
+        else if (completeType === "rigid") haptics.rigid();
+        else if (completeType === "success") haptics.success();
+        else if (completeType === "selection") haptics.selection();
+        else if (completeType === "light") haptics.light();
+      }
     }
-  }, [isLoading, vibrateOnStart, startType, vibrateOnComplete, completeType]);
+  }, [isLoading, vibrateOnStart, startType, vibrateOnComplete, completeType, pulseDuringLoading, pulseIntervalMs]);
+
+  // Cleanup on unmount if component unmounts while loading
+  useEffect(() => {
+    return () => {
+      if (pulseDuringLoading) {
+        haptics.stopLoadingPulse();
+      }
+    };
+  }, [pulseDuringLoading]);
 }
 
 /**

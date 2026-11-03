@@ -22,7 +22,10 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.samayaraj.ZQApp",
-      "softwareKeyboardLayoutMode": "resize"
+      "softwareKeyboardLayoutMode": "resize",
+      "permissions": [
+        "android.permission.VIBRATE"
+      ]
     },
     "plugins": [
       "expo-router",

@@ -1,148 +1,172 @@
 import * as Haptics from "expo-haptics";
-import { Platform } from "react-native";
+import { Platform, Vibration } from "react-native";
 
-/**
- * Universal safe wrapper around expo-haptics to handle platform limitations,
- * web fallbacks, and prevent unhandled promise rejections.
- */
+let activePulseInterval: ReturnType<typeof setInterval> | null = null;
+let lastTriggerTime = 0;
+const DEBOUNCE_THRESHOLD_MS = 25;
+
+function triggerVibration(
+  androidPattern: number | number[],
+  iosAction: () => Promise<void>
+): void {
+  const now = Date.now();
+  if (now - lastTriggerTime < DEBOUNCE_THRESHOLD_MS) {
+    return;
+  }
+  lastTriggerTime = now;
+
+  if (Platform.OS === "android") {
+    try {
+      Vibration.vibrate(androidPattern);
+    } catch {
+      iosAction().catch(() => {});
+    }
+  } else if (Platform.OS === "ios") {
+    iosAction().catch(() => {});
+  }
+}
+
+
 export const haptics = {
   /**
-   * Light vibration - ideal for lazyload start, tab switches, and subtle interactions.
+   * Light vibration - ideal for subtle interactions, stepper decrements, and tab switches.
    */
   light: async (): Promise<void> => {
-    try {
-      if (Platform.OS !== "web") {
-        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      }
-    } catch {
-      // Ignore if device does not support haptics
-    }
+    triggerVibration(25, () =>
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    );
   },
 
   /**
    * Medium vibration - ideal for pull-to-refresh triggers, toggle switches, or modal opens.
    */
   medium: async (): Promise<void> => {
-    try {
-      if (Platform.OS !== "web") {
-        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      }
-    } catch {
-      // Ignore if device does not support haptics
-    }
+    triggerVibration(40, () =>
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+    );
   },
 
   /**
    * Heavy vibration - ideal for critical actions, deletes, or significant state shifts.
    */
   heavy: async (): Promise<void> => {
-    try {
-      if (Platform.OS !== "web") {
-        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-      }
-    } catch {
-      // Ignore if device does not support haptics
-    }
+    triggerVibration(65, () =>
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+    );
   },
 
   /**
    * Rigid vibration - sharp, solid, crisp mechanical click/tap with hard tactile response.
    */
   rigid: async (): Promise<void> => {
-    try {
-      if (Platform.OS !== "web") {
-        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
-      }
-    } catch {
-      // Ignore if device does not support haptics
-    }
+    triggerVibration(35, () =>
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid)
+    );
   },
 
   /**
    * Hard vibration - strong, prominent tactile response with audible physical haptic feedback.
    */
   hard: async (): Promise<void> => {
-    try {
-      if (Platform.OS !== "web") {
-        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-      }
-    } catch {
-      // Ignore if device does not support haptics
-    }
+    triggerVibration(70, () =>
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+    );
   },
 
   /**
    * Soft vibration - gentle tactile feedback.
    */
   soft: async (): Promise<void> => {
-    try {
-      if (Platform.OS !== "web") {
-        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-      }
-    } catch {
-      // Ignore if device does not support haptics
-    }
+    triggerVibration(20, () =>
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft)
+    );
   },
 
   /**
    * Selection feedback - ideal for picker wheel, item selection, or subtle clicks.
    */
   selection: async (): Promise<void> => {
-    try {
-      if (Platform.OS !== "web") {
-        await Haptics.selectionAsync();
-      }
-    } catch {
-      // Ignore if device does not support haptics
-    }
+    triggerVibration(15, () => Haptics.selectionAsync());
   },
 
   /**
    * Success notification vibration - e.g. after API data loaded successfully.
+   * Produces a two-pulse confirmation pattern.
    */
   success: async (): Promise<void> => {
-    try {
-      if (Platform.OS !== "web") {
-        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      }
-    } catch {
-      // Ignore if device does not support haptics
-    }
+    triggerVibration([0, 50, 70, 60], () =>
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+    );
   },
 
   /**
    * Warning notification vibration - e.g. network retry or partial data.
    */
   warning: async (): Promise<void> => {
-    try {
-      if (Platform.OS !== "web") {
-        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-      }
-    } catch {
-      // Ignore if device does not support haptics
-    }
+    triggerVibration([0, 60, 60, 60], () =>
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
+    );
   },
 
   /**
    * Error notification vibration - e.g. API request failure or validation error.
+   * Produces a distinct three-pulse warning pattern.
    */
   error: async (): Promise<void> => {
-    try {
-      if (Platform.OS !== "web") {
-        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      }
-    } catch {
-      // Ignore if device does not support haptics
-    }
+    triggerVibration([0, 60, 50, 60, 50, 60], () =>
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+    );
   },
 
   // ----------------------------------------------------
-  // Context-specific loading & API haptic presets
+  // Continuous & Loading Vibration Controls
   // ----------------------------------------------------
 
+
+  startLoadingPulse: (intervalMs: number = 280): (() => void) => {
+    haptics.stopLoadingPulse();
+
+    if (Platform.OS === "android") {
+      try {
+        // Continuous pulsing pattern: 120ms vibrate, 180ms pause, repeating indefinitely
+        Vibration.vibrate([0, 120, 180], true);
+      } catch {
+        // Fallback to interval if repeating Vibration pattern is unavailable
+        activePulseInterval = setInterval(() => {
+          haptics.medium();
+        }, intervalMs);
+      }
+    } else if (Platform.OS === "ios") {
+      // Immediate tactile cue on iOS Taptic Engine
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+      activePulseInterval = setInterval(() => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+      }, intervalMs);
+    }
+
+    return () => {
+      haptics.stopLoadingPulse();
+    };
+  },
+
   /**
-   * Triggered when lazy loading begins (hard tactile feedback).
+   * Immediately stops any ongoing loading pulse or vibration.
    */
+  stopLoadingPulse: (): void => {
+    if (activePulseInterval) {
+      clearInterval(activePulseInterval);
+      activePulseInterval = null;
+    }
+    try {
+      if (Platform.OS !== "web") {
+        Vibration.cancel();
+      }
+    } catch {
+      // Ignore
+    }
+  },
+
+
   onLazyLoadStart: async (): Promise<void> => {
     await haptics.heavy();
   },
@@ -180,6 +204,46 @@ export const haptics = {
    * Uses Error notification vibration pattern as requested.
    */
   onAddToCart: async (): Promise<void> => {
+    await haptics.error();
+  },
+
+
+  onSignInStart: (intervalMs: number = 280): (() => void) => {
+    return haptics.startLoadingPulse(intervalMs);
+  },
+
+  /**
+   * Triggered when signing in loading finishes (before success/error feedback).
+   */
+  onSignInEnd: (): void => {
+    haptics.stopLoadingPulse();
+  },
+
+  /**
+   * Triggered when signing in completes successfully.
+   * Stops the ongoing loading pulse, lets the hardware reset,
+   * then delivers distinct success feedback before navigating.
+   */
+  onSignInSuccess: async (): Promise<void> => {
+    haptics.stopLoadingPulse();
+    if (Platform.OS === "android") {
+      // 60ms delay ensures Android IPC binder cancellation completes
+      // so the success pattern is not swallowed by cancel()
+      await new Promise((resolve) => setTimeout(resolve, 60));
+    }
+    await haptics.success();
+  },
+
+  /**
+   * Triggered when signing in or verification fails.
+   * Stops the loading pulse, lets the hardware reset,
+   * then delivers distinct error feedback.
+   */
+  onSignInError: async (): Promise<void> => {
+    haptics.stopLoadingPulse();
+    if (Platform.OS === "android") {
+      await new Promise((resolve) => setTimeout(resolve, 60));
+    }
     await haptics.error();
   },
 };

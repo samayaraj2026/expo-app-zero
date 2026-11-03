@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AppButton from "@/components/ui/AppButton";
 import {
   CARD_CLASS,
@@ -18,46 +18,137 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 function CatalogueCard({
-  bottomImageUri,
-  topImageUri,
-  anim,
+  index,
+  setIndex,
 }: {
-  bottomImageUri?: string;
-  topImageUri: string;
-  anim: Animated.Value;
+  index: number;
+  setIndex: number;
 }) {
-  const opacity = anim;
-  const scale = anim.interpolate({
+  const [layerAUri, setLayerAUri] = useState(CATALOGUE_IMAGE_SETS[0][index]);
+  const [layerBUri, setLayerBUri] = useState(
+    CATALOGUE_IMAGE_SETS[1 % CATALOGUE_IMAGE_SETS.length][index]
+  );
+  const [topLayer, setTopLayer] = useState<"A" | "B">("A");
+
+  const isFirstMount = useRef(true);
+  const activeLayerRef = useRef<"A" | "B">("A");
+
+  const [animA] = useState(() => new Animated.Value(0));
+  const [animB] = useState(() => new Animated.Value(0));
+
+  useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      // Staggered intro animation for initial set (Set 1)
+      const anim = Animated.timing(animA, {
+        toValue: 1,
+        duration: 350,
+        delay: index * 160,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      });
+      anim.start();
+      return () => anim.stop();
+    }
+
+    const nextUri = CATALOGUE_IMAGE_SETS[setIndex][index];
+
+    if (activeLayerRef.current === "A") {
+      activeLayerRef.current = "B";
+      setLayerBUri(nextUri);
+      setTopLayer("B");
+      animB.setValue(0);
+
+      const anim = Animated.timing(animB, {
+        toValue: 1,
+        duration: 350,
+        delay: index * 160,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      });
+
+      anim.start(({ finished }) => {
+        if (finished) {
+          animA.setValue(0);
+        }
+      });
+
+      return () => anim.stop();
+    } else {
+      activeLayerRef.current = "A";
+      setLayerAUri(nextUri);
+      setTopLayer("A");
+      animA.setValue(0);
+
+      const anim = Animated.timing(animA, {
+        toValue: 1,
+        duration: 350,
+        delay: index * 160,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      });
+
+      anim.start(({ finished }) => {
+        if (finished) {
+          animB.setValue(0);
+        }
+      });
+
+      return () => anim.stop();
+    }
+  }, [setIndex, index, animA, animB]);
+
+  const scaleA = animA.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.92, 1],
+  });
+
+  const scaleB = animB.interpolate({
     inputRange: [0, 1],
     outputRange: [0.92, 1],
   });
 
   return (
     <View className={CARD_CLASS}>
-      {/* Previous image layer: stays visible underneath so the gray container never flashes */}
-      {bottomImageUri ? (
-        <Image
-          source={{ uri: bottomImageUri }}
-          style={{ width: "100%", height: "100%", position: "absolute" }}
-          contentFit="cover"
-        />
-      ) : null}
-
-      {/* New incoming image layer: cross-fades and scales in over the previous image */}
+      {/* Layer A */}
       <Animated.View
         style={{
+          position: "absolute",
           width: "100%",
           height: "100%",
-          position: "absolute",
-          opacity,
-          transform: [{ scale }],
+          opacity: animA,
+          transform: [{ scale: scaleA }],
+          zIndex: topLayer === "A" ? 2 : 1,
+          elevation: topLayer === "A" ? 2 : 1,
         }}
       >
         <Image
-          source={{ uri: topImageUri }}
+          source={{ uri: layerAUri }}
           style={{ width: "100%", height: "100%" }}
           contentFit="cover"
-          transition={150}
+          transition={0}
+          cachePolicy="memory-disk"
+        />
+      </Animated.View>
+
+      {/* Layer B */}
+      <Animated.View
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          opacity: animB,
+          transform: [{ scale: scaleB }],
+          zIndex: topLayer === "B" ? 2 : 1,
+          elevation: topLayer === "B" ? 2 : 1,
+        }}
+      >
+        <Image
+          source={{ uri: layerBUri }}
+          style={{ width: "100%", height: "100%" }}
+          contentFit="cover"
+          transition={0}
+          cachePolicy="memory-disk"
         />
       </Animated.View>
     </View>
@@ -68,36 +159,22 @@ function CatalogueColumn({
   marginTop,
   startIndex,
   count,
-  bottomImages,
-  topImages,
-  cardAnims,
+  setIndex,
 }: {
   marginTop: number;
   startIndex: number;
   count: number;
-  bottomImages?: string[];
-  topImages: string[];
-  cardAnims: Animated.Value[];
+  setIndex: number;
 }) {
   return (
-    <View
-      className="items-center gap-3"
-      style={{ marginTop }}
-    >
+    <View className="items-center gap-3" style={{ marginTop }}>
       {Array.from({ length: count }, (_, i) => {
         const globalIndex = startIndex + i;
-        const bottomImageUri = bottomImages
-          ? bottomImages[globalIndex]
-          : undefined;
-        const topImageUri = topImages[globalIndex];
-        const anim = cardAnims[globalIndex];
-
         return (
           <CatalogueCard
             key={globalIndex}
-            bottomImageUri={bottomImageUri}
-            topImageUri={topImageUri}
-            anim={anim}
+            index={globalIndex}
+            setIndex={setIndex}
           />
         );
       })}
@@ -107,86 +184,23 @@ function CatalogueColumn({
 
 export default function CatalogueIntroScreen() {
   const insets = useSafeAreaInsets();
-
-  // Dual-layer state: bottom layer preserves currently visible images, top layer cross-fades incoming images
-  const [renderSets, setRenderSets] = useState<{
-    bottom: number | null;
-    top: number;
-  }>({
-    bottom: null,
-    top: 0,
-  });
-
-  // 11 animated values for the top layer cross-fade
-  const cardAnims = useMemo(
-    () => Array.from({ length: 11 }, () => new Animated.Value(0)),
-    []
-  );
+  const [activeSetIndex, setActiveSetIndex] = useState(0);
 
   useEffect(() => {
-    let isMounted = true;
-    let holdTimer: ReturnType<typeof setTimeout>;
-    let nextCycleTimer: ReturnType<typeof setTimeout>;
-    let currentTop = 0;
-
-    const runTransition = () => {
-      if (!isMounted) return;
-
-      // 1. Reset top layer animated values to 0
-      cardAnims.forEach((anim) => anim.setValue(0));
-
-      // 2. Animate incoming images ONE BY ONE (160ms stagger) directly over the existing images
-      const animations = cardAnims.map((anim, i) =>
-        Animated.timing(anim, {
-          toValue: 1,
-          duration: 350,
-          delay: i * 160,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        })
-      );
-
-      Animated.parallel(animations).start(({ finished }) => {
-        if (!finished || !isMounted) return;
-
-        // 3. Hold all filled images for 2 seconds
-        holdTimer = setTimeout(() => {
-          if (!isMounted) return;
-
-          const previousTop = currentTop;
-          const nextTop = (currentTop + 1) % CATALOGUE_IMAGE_SETS.length;
-          currentTop = nextTop;
-
-          // 4. Seamless promotion: current top image becomes bottom background.
-          // Resetting cardAnims to 0 causes zero visual flicker because the bottom layer has the identical image!
-          cardAnims.forEach((anim) => anim.setValue(0));
-          setRenderSets({ bottom: previousTop, top: nextTop });
-
-          // 5. Brief tick to allow React to mount the new URIs, then run the next cross-fade cycle
-          nextCycleTimer = setTimeout(() => {
-            if (isMounted) {
-              runTransition();
-            }
-          }, 60);
-        }, 2000);
+    // Pre-cache all images on mount for instantaneous, flicker-free rendering
+    CATALOGUE_IMAGE_SETS.forEach((set) => {
+      set.forEach((url) => {
+        Image.prefetch(url);
       });
-    };
+    });
 
-    runTransition();
+    // 11 cards * 160ms = 1600ms stagger + 350ms duration = 1950ms animation + 2250ms hold = 4200ms per cycle
+    const interval = setInterval(() => {
+      setActiveSetIndex((prev) => (prev + 1) % CATALOGUE_IMAGE_SETS.length);
+    }, 4200);
 
-    return () => {
-      isMounted = false;
-      clearTimeout(holdTimer);
-      clearTimeout(nextCycleTimer);
-      cardAnims.forEach((anim) => anim.stopAnimation());
-    };
-  }, [cardAnims]);
-
-  const bottomImages =
-    renderSets.bottom !== null
-      ? CATALOGUE_IMAGE_SETS[renderSets.bottom]
-      : undefined;
-  const topImages = CATALOGUE_IMAGE_SETS[renderSets.top];
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSkip = () => {
     router.replace("/(tabs)/home");
@@ -240,9 +254,7 @@ export default function CatalogueIntroScreen() {
             marginTop={column.marginTop}
             startIndex={column.startIndex}
             count={column.count}
-            bottomImages={bottomImages}
-            topImages={topImages}
-            cardAnims={cardAnims}
+            setIndex={activeSetIndex}
           />
         ))}
       </View>

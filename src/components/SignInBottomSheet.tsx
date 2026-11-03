@@ -23,6 +23,7 @@ import { Keyboard, Platform, StyleSheet, Text, TouchableOpacity, View } from "re
 import { Easing } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { OtpInput } from "react-native-otp-entry";
+import { haptics } from "@/utils/haptics";
 import type { SignInStep, SignInBottomSheetProps } from "@/types";
 
 export type { SignInStep, SignInBottomSheetProps };
@@ -93,6 +94,12 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
     };
   }, []);
 
+  useEffect(() => {
+    return () => {
+      haptics.stopLoadingPulse();
+    };
+  }, []);
+
   const handleInputFocus = (offsetY: number) => {
     setTimeout(() => {
       scrollRef.current?.scrollTo({ y: offsetY, animated: true });
@@ -114,12 +121,14 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
   );
 
   const handleClose = () => {
+    haptics.stopLoadingPulse();
     Keyboard.dismiss();
     sheetRef.current?.close();
   };
 
   const handleSheetChange = (index: number) => {
     if (index === -1) {
+      haptics.stopLoadingPulse();
       setStep("email");
       setEmail("");
       setEmailError("");
@@ -136,11 +145,13 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
     const trimmed = email.trim();
     if (!trimmed) {
       setEmailError("Email address is required");
+      haptics.error();
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(trimmed)) {
       setEmailError("Please enter a valid email address");
+      haptics.error();
       return;
     }
     setEmailError("");
@@ -161,14 +172,17 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
     const trimmedConfirm = confirmPassword.trim();
     if (!trimmedCreate) {
       setCreatePasswordError("Please enter a password");
+      haptics.error();
       return;
     }
     if (!trimmedConfirm) {
       setConfirmPasswordError("Please confirm your password");
+      haptics.error();
       return;
     }
     if (trimmedCreate !== trimmedConfirm) {
       setConfirmPasswordError("Passwords do not match");
+      haptics.error();
       return;
     }
     setStep("signingIn");
@@ -176,17 +190,26 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
 
   useEffect(() => {
     if (step === "signingIn") {
-      const timer = setTimeout(() => {
+      // Continuously pulse haptic feedback for the full duration of loading screen
+      const stopPulse = haptics.onSignInStart();
+      const timer = setTimeout(async () => {
+        stopPulse();
+
         // Static password validation against "zeroque"
         if (createPassword.trim() === "zeroque") {
+          await haptics.onSignInSuccess();
           sheetRef.current?.close();
           router.push("/cataloguescreen");
         } else {
+          await haptics.onSignInError();
           setStep("expiredInvite");
         }
       }, 1500);
 
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        stopPulse();
+      };
     }
   }, [step, createPassword, sheetRef]);
 
@@ -196,6 +219,7 @@ export default function SignInBottomSheet({ sheetRef }: SignInBottomSheetProps) 
   };
 
   const handleBack = () => {
+    haptics.stopLoadingPulse();
     Keyboard.dismiss();
     if (step === "expiredInvite") {
       setStep("setPassword");
