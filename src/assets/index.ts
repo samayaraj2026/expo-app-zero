@@ -24,6 +24,7 @@ import ConfirmedIcon from "./svg/confirmedIcon.svg";
 import OutofStockIcon from "./svg/out_of_stock_Icon.svg";
 import CopyIcon from "./svg/copy.svg";
 import VerifiedIcon from "./svg/verified.svg";
+import NotifyIcon from "./svg/notifyIcon.svg";
 
 export {
   SearchIcon,
@@ -52,4 +53,5 @@ export {
   OutofStockIcon,
   CopyIcon,
   VerifiedIcon,
+  NotifyIcon,
 };
