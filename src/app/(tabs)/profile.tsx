@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { ProfileIcon } from "@/assets";
@@ -36,16 +36,7 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       <View style={styles.container}>
-        <SetupEmptyState
-          illustration={
-            <EmptyStateBackdropBlob>
-              <ProfileIcon width={56} height={56} stroke={colors.primary} />
-            </EmptyStateBackdropBlob>
-          }
-          title="Profile Setup Pending"
-          description="Your enterprise profile and procurement credentials will appear here once connected."
-          action={emptyStateAction}
-        />
+       <Text>Profile Screen</Text>
       </View>
     </SafeAreaView>
   );

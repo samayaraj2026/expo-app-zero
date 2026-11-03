@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { CartIcon } from "@/assets";
@@ -36,16 +36,8 @@ export default function CartScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       <View style={styles.container}>
-        <SetupEmptyState
-          illustration={
-            <EmptyStateBackdropBlob>
-              <CartIcon width={56} height={56} stroke={colors.primary} />
-            </EmptyStateBackdropBlob>
-          }
-          title="Your Basket is Empty"
-          description="Explore our enterprise catalogue to add products, request supplies, and submit for approval."
-          action={emptyStateAction}
-        />
+        
+        <Text>CartScreen</Text>
       </View>
     </SafeAreaView>
   );
